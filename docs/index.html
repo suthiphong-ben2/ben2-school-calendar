@@ -4,182 +4,486 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ปฏิทินวิชาการและกิจกรรม — โรงเรียนเบญจมราชรังสฤษฎิ์ ๒</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+
 <style>
-  body { margin: 0; background: #f4f6f9; }
-  .page { max-width: 1080px; margin: 0 auto; padding: 24px 16px 48px; }
+  :root {
+    --navy:      #12315e;
+    --navy-deep: #0b2247;
+    --gold:      #f0b429;
+    --gold-tint: #fff6e0;
+    --paper:     #f5f7fa;
+    --card:      #ffffff;
+    --line:      #d5dce8;
+    --muted:     #5a6a85;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--navy);
+    font-family: 'Sarabun', system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+  }
+
+  .page { max-width: 1060px; margin: 0 auto; padding: 20px 16px 56px; }
+
+  /* ---------- แถบหัวเรื่อง ---------- */
+  .masthead {
+    background: var(--navy-deep);
+    border-bottom: 5px solid var(--gold);
+    border-radius: 12px 12px 0 0;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  .crest {
+    width: 68px; height: 68px; flex: none;
+    background: #fff; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 7px;
+  }
+  .crest img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .crest.empty { display: none; }
+
+  .masthead .titles { flex: 1 1 240px; color: #fff; }
+  .masthead h1 {
+    font-family: 'Noto Serif Thai', serif;
+    font-weight: 600;
+    font-size: clamp(1.35rem, 3.6vw, 1.85rem);
+    line-height: 1.35;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .masthead .school {
+    margin: 2px 0 0;
+    font-size: .95rem;
+    color: #b9c8e0;
+  }
+
+  .cta {
+    flex: none;
+    display: inline-block;
+    font-size: .95rem; font-weight: 600;
+    text-decoration: none; white-space: nowrap;
+    padding: 11px 20px; border-radius: 7px;
+    background: var(--gold); color: var(--navy-deep);
+    border: 1px solid #d99f1c;
+  }
+  .cta:hover { background: #ffc63f; }
+  .cta:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+
+  /* ---------- แถบเครื่องมือ ---------- */
+  .controls {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    padding: 16px 20px;
+    margin-bottom: 22px;
+  }
+
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    border: 1px solid var(--line); background: #fff; color: var(--navy);
+    border-radius: 999px; padding: 5px 13px 5px 10px;
+    font-family: inherit; font-size: .89rem; cursor: pointer;
+  }
+  .chip .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+  .chip[aria-pressed="false"] { opacity: .38; }
+  .chip:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+  .navbar {
+    display: flex; flex-wrap: wrap; gap: 12px;
+    align-items: center; justify-content: space-between;
+    margin-top: 16px; padding-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+  .monthname {
+    font-family: 'Noto Serif Thai', serif;
+    font-size: 1.3rem; font-weight: 600; margin: 0;
+  }
+  .navbtns { display: flex; gap: 6px; flex-wrap: wrap; }
+  .btn {
+    font-family: inherit; font-size: .9rem;
+    padding: 7px 14px; border-radius: 6px; cursor: pointer;
+    border: 1px solid var(--line); background: #fff; color: var(--navy);
+  }
+  .btn:hover { background: #eef2f8; }
+  .btn[aria-pressed="true"] { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+  /* ---------- ตารางปฏิทิน ---------- */
+  .board {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px;
+  }
+  .fc {
+    --fc-border-color: var(--line);
+    --fc-today-bg-color: var(--gold-tint);
+    font-family: inherit;
+  }
+  .fc .fc-daygrid-day-number { font-size: .88rem; padding: 5px 8px; color: var(--navy); }
+  .fc .fc-col-header-cell-cushion {
+    font-weight: 600; font-size: .87rem; padding: 9px 4px; color: var(--muted);
+  }
+  .fc .fc-day-sun .fc-col-header-cell-cushion { color: #a8443c; }
+  .fc-event { border: none; font-size: .81rem; padding: 1px 5px; cursor: pointer; }
+  .fc .fc-day-today .fc-daygrid-day-number {
+    font-weight: 700;
+    box-shadow: inset 0 -3px 0 var(--gold);
+  }
+  .fc-list-event:hover td { background: var(--gold-tint); }
+
+  /* ---------- ลิสต์กิจกรรมรายเดือน ---------- */
+  .agenda { margin-top: 34px; }
+  .agenda h2 {
+    font-family: 'Noto Serif Thai', serif;
+    font-size: 1.2rem; font-weight: 600; margin: 0 0 4px;
+  }
+  .agenda .lead { margin: 0 0 16px; color: var(--muted); font-size: .93rem; }
+
+  .entry {
+    display: flex; gap: 0;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    overflow: hidden;
+    margin-bottom: 9px;
+  }
+  .entry .rail {
+    flex: none; width: 78px;
+    background: var(--gold-tint);
+    border-right: 3px solid var(--gold);
+    padding: 11px 6px;
+    text-align: center;
+  }
+  .entry .rail .d {
+    font-family: 'Noto Serif Thai', serif;
+    font-size: 1.45rem; font-weight: 700; line-height: 1.1;
+    display: block;
+  }
+  .entry .rail .w { font-size: .8rem; color: var(--muted); display: block; }
+  .entry .rail .span { font-size: .76rem; color: var(--muted); display: block; margin-top: 2px; }
+
+  .entry .body { padding: 11px 16px; flex: 1 1 auto; min-width: 0; }
+  .entry .body h3 { margin: 0 0 3px; font-size: 1.02rem; font-weight: 600; line-height: 1.4; }
+  .entry .tagline { display: flex; align-items: center; gap: 7px; font-size: .87rem; color: var(--muted); }
+  .entry .tagline .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+  .entry .where { margin: 3px 0 0; font-size: .87rem; color: var(--muted); }
+  .entry.past { opacity: .55; }
+
+  .agenda .none {
+    background: var(--card); border: 1px dashed var(--line);
+    border-radius: 9px; padding: 26px 18px; text-align: center;
+    color: var(--muted); font-size: .93rem;
+  }
+
+  .loading { padding: 46px 12px; text-align: center; color: var(--muted); }
+  .fail {
+    background: #fdecea; border-left: 4px solid #a8443c;
+    padding: 14px 18px; border-radius: 8px; color: #7d2f28; font-size: .94rem;
+  }
+
+  /* ---------- กล่องรายละเอียด ---------- */
+  dialog.detail {
+    border: 1px solid var(--line); border-top: 5px solid var(--gold);
+    border-radius: 12px; padding: 0;
+    max-width: 460px; width: calc(100% - 32px); color: var(--navy);
+  }
+  dialog.detail::backdrop { background: rgba(11, 34, 71, .5); }
+  .detail-head { padding: 18px 22px 13px; border-bottom: 1px solid var(--line); }
+  .detail-head .tag {
+    display: inline-block; font-size: .78rem; color: #fff;
+    padding: 2px 11px; border-radius: 999px;
+  }
+  .detail-head h2 {
+    font-family: 'Noto Serif Thai', serif; font-size: 1.15rem;
+    margin: 8px 0 0; font-weight: 600;
+  }
+  .detail-body { padding: 15px 22px 18px; }
+  .detail-body dl {
+    display: grid; grid-template-columns: auto 1fr;
+    gap: 7px 18px; margin: 0; font-size: .93rem;
+  }
+  .detail-body dt { color: var(--muted); }
+  .detail-body dd { margin: 0; }
+  .detail-note { margin: 15px 0 0; font-size: .93rem; white-space: pre-wrap; }
+  .detail-foot { padding: 0 22px 18px; text-align: right; }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+  @media (max-width: 600px) {
+    .masthead { padding: 16px; gap: 14px; }
+    .crest { width: 52px; height: 52px; }
+    .cta { flex: 1 1 100%; text-align: center; }
+    .controls { padding: 14px 16px; }
+    .fc .fc-col-header-cell-cushion { font-size: .78rem; }
+    .fc-event { font-size: .74rem; }
+    .entry .rail { width: 64px; }
+    .entry .rail .d { font-size: 1.25rem; }
+  }
 </style>
 </head>
 <body>
 <div class="page">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@600&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
 
-<style>
-  #ben2cal {
-    --ink: #1b2a4a; --accent: #b3271e;
-    --card: #ffffff; --line: #d8dee8; --muted: #5f6b80;
-    font-family: 'Sarabun', system-ui, sans-serif;
-    color: var(--ink); line-height: 1.65; font-size: 16px;
-  }
-  #ben2cal * { box-sizing: border-box; }
+  <header class="masthead">
+    <!-- วางไฟล์ตราโรงเรียนชื่อ logo.png ไว้ในโฟลเดอร์เดียวกัน ถ้าไม่มีไฟล์ แผ่นนี้จะซ่อนเอง -->
+    <span class="crest" id="crest">
+      <img src="logo.png" alt="ตราโรงเรียนเบญจมราชรังสฤษฎิ์ ๒"
+           onerror="document.getElementById('crest').classList.add('empty')">
+    </span>
+    <div class="titles">
+      <h1>ปฏิทินวิชาการและกิจกรรม</h1>
+      <p class="school">โรงเรียนเบญจมราชรังสฤษฎิ์ ๒</p>
+    </div>
+    <a class="cta" href="app.html" target="_top">กรอกกิจกรรม</a>
+  </header>
 
-  #ben2cal .head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
-  #ben2cal .head h2 {
-    font-family: 'Noto Serif Thai', serif; font-weight: 600;
-    font-size: clamp(1.4rem, 4vw, 1.9rem); margin: 0; color: var(--ink);
-  }
-  #ben2cal .head p { margin: 0; color: var(--muted); font-size: .95rem; }
-  #ben2cal .rule { height: 3px; background: var(--accent); width: 64px; margin: 14px 0 20px; }
-
-  #ben2cal .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
-  #ben2cal .chip {
-    display: inline-flex; align-items: center; gap: 7px;
-    border: 1px solid var(--line); background: var(--card); color: var(--ink);
-    border-radius: 999px; padding: 6px 14px 6px 11px;
-    font-size: .9rem; font-family: inherit; cursor: pointer;
-  }
-  #ben2cal .chip .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
-  #ben2cal .chip[aria-pressed="false"] { opacity: .42; }
-
-  #ben2cal .toolbar {
-    display: flex; flex-wrap: wrap; gap: 10px;
-    align-items: center; justify-content: space-between; margin-bottom: 14px;
-  }
-  #ben2cal .month { font-family: 'Noto Serif Thai', serif; font-size: 1.3rem; font-weight: 600; margin: 0; }
-  #ben2cal .nav { display: flex; gap: 6px; flex-wrap: wrap; }
-  #ben2cal .btn {
-    font-family: inherit; font-size: .92rem; padding: 7px 14px;
-    border: 1px solid var(--line); background: var(--card); color: var(--ink);
-    border-radius: 6px; cursor: pointer;
-  }
-  #ben2cal .btn[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
-  #ben2cal .btn:focus-visible, #ben2cal .chip:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
-
-  #ben2cal .board { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
-  #ben2cal .fc { --fc-border-color: var(--line); --fc-today-bg-color: #fff4f3; font-family: inherit; }
-  #ben2cal .fc .fc-daygrid-day-number { font-size: .88rem; padding: 5px 7px; }
-  #ben2cal .fc .fc-col-header-cell-cushion { font-weight: 600; font-size: .88rem; padding: 8px 4px; color: var(--muted); }
-  #ben2cal .fc-event { border: none; font-size: .82rem; padding: 1px 4px; cursor: pointer; }
-  #ben2cal .fc .fc-day-today .fc-daygrid-day-number { color: var(--accent); font-weight: 600; }
-  #ben2cal .state { padding: 40px 10px; text-align: center; color: var(--muted); font-size: .95rem; }
-
-  #ben2detail {
-    border: 1px solid #d8dee8; border-radius: 12px; padding: 0;
-    max-width: 460px; width: calc(100% - 32px);
-    font-family: 'Sarabun', system-ui, sans-serif; color: #1b2a4a;
-  }
-  #ben2detail::backdrop { background: rgba(15, 22, 38, .45); }
-  #ben2detail .dhead { padding: 18px 20px 12px; border-bottom: 1px solid #d8dee8; }
-  #ben2detail .dhead h3 { font-family: 'Noto Serif Thai', serif; font-size: 1.15rem; margin: 6px 0 0; font-weight: 600; }
-  #ben2detail .tag { display: inline-block; font-size: .78rem; color: #fff; padding: 2px 10px; border-radius: 999px; }
-  #ben2detail .dbody { padding: 14px 20px 18px; }
-  #ben2detail dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; margin: 0; font-size: .93rem; }
-  #ben2detail dt { color: #5f6b80; }
-  #ben2detail dd { margin: 0; }
-  #ben2detail .note { margin: 14px 0 0; font-size: .93rem; white-space: pre-wrap; }
-  #ben2detail .dfoot { padding: 0 20px 18px; text-align: right; }
-  #ben2detail .btn {
-    font-family: inherit; font-size: .92rem; padding: 7px 14px;
-    border: 1px solid #d8dee8; background: #fff; color: #1b2a4a; border-radius: 6px; cursor: pointer;
-  }
-
-  @media (max-width: 560px) {
-    #ben2cal .fc .fc-col-header-cell-cushion { font-size: .78rem; }
-    #ben2cal .fc-event { font-size: .74rem; }
-  }
-  @media (prefers-reduced-motion: reduce) { #ben2cal * { transition: none !important; animation: none !important; } }
-</style>
-
-<div id="ben2cal">
-  <div class="head">
-    <h2>ปฏิทินวิชาการและกิจกรรม</h2>
-    <p>โรงเรียนเบญจมราชรังสฤษฎิ์ ๒</p>
-  </div>
-  <div class="rule"></div>
-
-  <div class="filters" id="ben2filters"></div>
-
-  <div class="toolbar">
-    <h3 class="month" id="ben2month">&nbsp;</h3>
-    <div class="nav">
-      <button class="btn" id="ben2prev"  type="button" aria-label="เดือนก่อนหน้า">‹</button>
-      <button class="btn" id="ben2today" type="button">วันนี้</button>
-      <button class="btn" id="ben2next"  type="button" aria-label="เดือนถัดไป">›</button>
-      <button class="btn" id="ben2m" type="button" aria-pressed="true">เดือน</button>
-      <button class="btn" id="ben2l" type="button" aria-pressed="false">รายการ</button>
+  <div class="controls">
+    <div class="filters" id="filters"></div>
+    <div class="navbar">
+      <h2 class="monthname" id="monthName">&nbsp;</h2>
+      <div class="navbtns">
+        <button class="btn" id="btnPrev"  type="button" aria-label="เดือนก่อนหน้า">‹</button>
+        <button class="btn" id="btnToday" type="button">วันนี้</button>
+        <button class="btn" id="btnNext"  type="button" aria-label="เดือนถัดไป">›</button>
+        <button class="btn" id="btnGrid" type="button" aria-pressed="true">ตาราง</button>
+        <button class="btn" id="btnList" type="button" aria-pressed="false">รายการ</button>
+      </div>
     </div>
   </div>
 
   <div class="board">
-    <div class="state" id="ben2state">กำลังโหลดปฏิทิน</div>
-    <div id="ben2grid" style="display:none"></div>
+    <div class="loading" id="loadState">กำลังโหลดปฏิทิน</div>
+    <div id="calendar" style="display:none"></div>
   </div>
+
+  <section class="agenda" id="agenda" style="display:none">
+    <h2 id="agendaTitle">กิจกรรมในเดือนนี้</h2>
+    <p class="lead" id="agendaLead">เรียงตามวันที่</p>
+    <div id="agendaList"></div>
+  </section>
 </div>
 
-<dialog id="ben2detail">
-  <div class="dhead">
-    <span class="tag" id="ben2tag"></span>
-    <h3 id="ben2title"></h3>
+<dialog class="detail" id="detail">
+  <div class="detail-head">
+    <span class="tag" id="dTag"></span>
+    <h2 id="dTitle"></h2>
   </div>
-  <div class="dbody">
+  <div class="detail-body">
     <dl>
-      <dt>วันที่</dt><dd id="ben2date"></dd>
-      <dt>เวลา</dt><dd id="ben2time"></dd>
-      <dt>สถานที่</dt><dd id="ben2place"></dd>
-      <dt>ผู้รับผิดชอบ</dt><dd id="ben2dept"></dd>
+      <dt>วันที่</dt><dd id="dDate"></dd>
+      <dt>เวลา</dt><dd id="dTime"></dd>
+      <dt>สถานที่</dt><dd id="dPlace"></dd>
+      <dt>ผู้รับผิดชอบ</dt><dd id="dDept"></dd>
     </dl>
-    <p class="note" id="ben2note"></p>
+    <p class="detail-note" id="dNote"></p>
   </div>
-  <div class="dfoot"><button class="btn" id="ben2close" type="button">ปิด</button></div>
+  <div class="detail-foot"><button class="btn" id="dClose" type="button">ปิด</button></div>
 </dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/locales/th.global.min.js"></script>
 <script>
 (function () {
-  // ===== แก้บรรทัดนี้ =====
-  const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxFrKxA4KBQujrKBI9gcDOVOuSf-BuIXJ31lY0SfdpLQmjlYMfH6ob9StOUgYQuC_xN/exec?api=events';
-  // ========================
+  // ============ แก้บรรทัดนี้บรรทัดเดียว ============
+  var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxFrKxA4KBQujrKBI9gcDOVOuSf-BuIXJ31lY0SfdpLQmjlYMfH6ob9StOUgYQuC_xN/exec?api=events';
+  // ===============================================
 
-  const state  = document.getElementById('ben2state');
-  const grid   = document.getElementById('ben2grid');
-  const monthT = document.getElementById('ben2month');
-  const dialog = document.getElementById('ben2detail');
-  const chipBox = document.getElementById('ben2filters');
+  var THAI_WEEKDAY = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
+  var THAI_MONTH = ['', 'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+                    'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
 
-  let allEvents = [];
-  let active = new Set();
-  let calendar = null;
+  var allEvents = [];
+  var active = new Set();
+  var calendar = null;
 
-  function show(el, on) { el.style.display = on ? '' : 'none'; }
+  var $ = function (id) { return document.getElementById(id); };
 
-  function buildChips(events) {
-    const seen = new Map();
-    events.forEach(e => {
-      const c = e.extendedProps && e.extendedProps.category;
+  function ymd(date) {
+    return date.getFullYear() + '-' +
+           ('0' + (date.getMonth() + 1)).slice(-2) + '-' +
+           ('0' + date.getDate()).slice(-2);
+  }
+
+  function shiftDay(s, n) {
+    var p = s.split('-');
+    var d = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+    d.setDate(d.getDate() + n);
+    return ymd(d);
+  }
+
+  /** วันเริ่มและวันสิ้นสุดจริงของกิจกรรม โดยตัดเวลาออก */
+  function rangeOf(e) {
+    var s = e.start.slice(0, 10);
+    var en = e.end ? e.end.slice(0, 10) : s;
+    if (e.allDay) en = shiftDay(en, -1);   // ฟีดส่งวันสิ้นสุดแบบไม่รวมวันนั้น
+    if (en < s) en = s;
+    return { start: s, end: en };
+  }
+
+  function buildFilters(events) {
+    var seen = new Map();
+    events.forEach(function (e) {
+      var c = e.extendedProps && e.extendedProps.category;
       if (c && !seen.has(c)) seen.set(c, e.color);
     });
-    seen.forEach((color, name) => {
+    seen.forEach(function (color, name) {
       active.add(name);
-      const b = document.createElement('button');
+      var b = document.createElement('button');
       b.type = 'button';
       b.className = 'chip';
       b.setAttribute('aria-pressed', 'true');
-      b.innerHTML = '<span class="dot" style="background:' + color + '"></span>';
+      var dot = document.createElement('span');
+      dot.className = 'dot';
+      dot.style.background = color;
+      b.appendChild(dot);
       b.appendChild(document.createTextNode(name));
       b.onclick = function () {
-        const on = b.getAttribute('aria-pressed') === 'true';
+        var on = b.getAttribute('aria-pressed') === 'true';
         b.setAttribute('aria-pressed', String(!on));
         if (on) { active.delete(name); } else { active.add(name); }
         calendar.refetchEvents();
+        drawAgenda();
       };
-      chipBox.appendChild(b);
+      $('filters').appendChild(b);
     });
   }
 
+  function openDetail(ev) {
+    var p = ev.extendedProps;
+    $('dTag').textContent = p.category || '';
+    $('dTag').style.background = ev.backgroundColor || '#12315e';
+    $('dTitle').textContent = ev.title;
+    $('dDate').textContent  = p.dateText || '';
+    $('dTime').textContent  = p.timeText || 'ตลอดวัน';
+    $('dPlace').textContent = p.location || 'ไม่ระบุ';
+    $('dDept').textContent  = p.dept || 'ไม่ระบุ';
+    $('dNote').textContent  = p.detail || '';
+    $('detail').showModal();
+  }
+
+  /** กล่องรายละเอียดของรายการในลิสต์ ใช้ข้อมูลดิบจากฟีด */
+  function openDetailRaw(e) {
+    openDetail({
+      title: e.title,
+      backgroundColor: e.color,
+      extendedProps: e.extendedProps
+    });
+  }
+
+  // ---------- ลิสต์กิจกรรมของเดือนที่เปิดอยู่ ----------
+  function drawAgenda() {
+    if (!calendar) return;
+
+    // มุมมองรายการแสดงข้อมูลชุดเดียวกันอยู่แล้ว ไม่ต้องซ้ำ
+    if (calendar.view.type !== 'dayGridMonth') {
+      $('agenda').style.display = 'none';
+      return;
+    }
+    $('agenda').style.display = '';
+
+    var view = calendar.view;
+    var from = ymd(view.currentStart);
+    var to   = shiftDay(ymd(view.currentEnd), -1);
+    var today = ymd(new Date());
+
+    var rows = allEvents
+      .filter(function (e) { return active.has(e.extendedProps.category); })
+      .map(function (e) {
+        var r = rangeOf(e);
+        return { e: e, s: r.start, en: r.end };
+      })
+      .filter(function (x) { return x.s <= to && x.en >= from; })
+      .sort(function (a, b) {
+        if (a.s !== b.s) return a.s < b.s ? -1 : 1;
+        return (a.e.start || '') < (b.e.start || '') ? -1 : 1;
+      });
+
+    $('agendaTitle').textContent = 'กิจกรรมเดือน' + $('monthName').textContent.replace(/\s+/, ' ');
+    $('agendaLead').textContent = rows.length
+      ? 'เรียงตามวันที่ ' + rows.length + ' รายการ'
+      : '';
+
+    var box = $('agendaList');
+    box.innerHTML = '';
+
+    if (!rows.length) {
+      var none = document.createElement('div');
+      none.className = 'none';
+      none.textContent = 'เดือนนี้ยังไม่มีกิจกรรมในปฏิทิน';
+      box.appendChild(none);
+      return;
+    }
+
+    rows.forEach(function (x) {
+      var p = x.e.extendedProps;
+      var sp = x.s.split('-');
+      var dateObj = new Date(Number(sp[0]), Number(sp[1]) - 1, Number(sp[2]));
+
+      var row = document.createElement('div');
+      row.className = 'entry' + (x.en < today ? ' past' : '');
+
+      var rail = document.createElement('div');
+      rail.className = 'rail';
+      rail.innerHTML =
+        '<span class="d">' + Number(sp[2]) + '</span>' +
+        '<span class="w">' + THAI_WEEKDAY[dateObj.getDay()] + '</span>' +
+        (x.en !== x.s
+          ? '<span class="span">ถึง ' + Number(x.en.slice(8, 10)) + ' ' +
+            THAI_MONTH[Number(x.en.slice(5, 7))] + '</span>'
+          : '');
+
+      var body = document.createElement('div');
+      body.className = 'body';
+
+      var h = document.createElement('h3');
+      h.textContent = x.e.title;
+
+      var tag = document.createElement('div');
+      tag.className = 'tagline';
+      var dot = document.createElement('span');
+      dot.className = 'dot';
+      dot.style.background = x.e.color;
+      tag.appendChild(dot);
+      tag.appendChild(document.createTextNode(
+        p.category + (p.timeText && p.timeText !== 'ตลอดวัน' ? '  เวลา ' + p.timeText : '')
+      ));
+
+      body.appendChild(h);
+      body.appendChild(tag);
+
+      if (p.location) {
+        var w = document.createElement('p');
+        w.className = 'where';
+        w.textContent = 'สถานที่ ' + p.location;
+        body.appendChild(w);
+      }
+
+      row.appendChild(rail);
+      row.appendChild(body);
+      row.style.cursor = 'pointer';
+      row.onclick = function () { openDetailRaw(x.e); };
+      box.appendChild(row);
+    });
+  }
+
+  // ---------- สร้างปฏิทิน ----------
   function render() {
-    calendar = new FullCalendar.Calendar(grid, {
+    calendar = new FullCalendar.Calendar($('calendar'), {
       initialView: window.innerWidth < 640 ? 'listMonth' : 'dayGridMonth',
       locale: 'th',
       headerToolbar: false,
@@ -194,60 +498,56 @@
       },
       eventClick: function (info) {
         info.jsEvent.preventDefault();
-        const p = info.event.extendedProps;
-        const tag = document.getElementById('ben2tag');
-        tag.textContent = p.category || '';
-        tag.style.background = info.event.backgroundColor || '#3b5f8a';
-        document.getElementById('ben2title').textContent = info.event.title;
-        document.getElementById('ben2date').textContent  = p.dateText || '';
-        document.getElementById('ben2time').textContent  = p.timeText || 'ตลอดวัน';
-        document.getElementById('ben2place').textContent = p.location || '—';
-        document.getElementById('ben2dept').textContent  = p.dept || '—';
-        document.getElementById('ben2note').textContent  = p.detail || '';
-        dialog.showModal();
+        openDetail(info.event);
       },
       datesSet: function (info) {
-        monthT.textContent = info.view.title.replace(/\d{4}/g, function (y) {
-          return String(Number(y) + 543);
+        // locale th แสดงปีเป็น พ.ศ. อยู่แล้ว เช็คก่อนกันบวก 543 ซ้ำ
+        $('monthName').textContent = info.view.title.replace(/\d{4}/g, function (y) {
+          var n = Number(y);
+          return String(n < 2400 ? n + 543 : n);
         });
+        drawAgenda();
       }
     });
 
     calendar.render();
 
-    document.getElementById('ben2prev').onclick  = function () { calendar.prev(); };
-    document.getElementById('ben2next').onclick  = function () { calendar.next(); };
-    document.getElementById('ben2today').onclick = function () { calendar.today(); };
-    document.getElementById('ben2close').onclick = function () { dialog.close(); };
+    $('btnPrev').onclick  = function () { calendar.prev(); };
+    $('btnNext').onclick  = function () { calendar.next(); };
+    $('btnToday').onclick = function () { calendar.today(); };
+    $('dClose').onclick   = function () { $('detail').close(); };
 
-    const bm = document.getElementById('ben2m');
-    const bl = document.getElementById('ben2l');
     function setView(v) {
       calendar.changeView(v);
-      bm.setAttribute('aria-pressed', String(v === 'dayGridMonth'));
-      bl.setAttribute('aria-pressed', String(v === 'listMonth'));
+      $('btnGrid').setAttribute('aria-pressed', String(v === 'dayGridMonth'));
+      $('btnList').setAttribute('aria-pressed', String(v === 'listMonth'));
+      drawAgenda();
     }
-    bm.onclick = function () { setView('dayGridMonth'); };
-    bl.onclick = function () { setView('listMonth'); };
+    $('btnGrid').onclick = function () { setView('dayGridMonth'); };
+    $('btnList').onclick = function () { setView('listMonth'); };
     setView(calendar.view.type);
   }
 
+  // ---------- โหลดข้อมูล ----------
   fetch(WEB_APP_URL)
     .then(function (r) { return r.json(); })
     .then(function (data) {
-      if (data && data.error) { throw new Error(data.error); }
+      if (data && data.error) throw new Error(data.error);
       allEvents = Array.isArray(data) ? data : [];
-      buildChips(allEvents);
-      show(state, false);
-      show(grid, true);
+      buildFilters(allEvents);
+      $('loadState').style.display = 'none';
+      $('calendar').style.display = '';
       render();
     })
     .catch(function (err) {
-      state.textContent = 'โหลดปฏิทินไม่สำเร็จ ' + err.message;
+      $('loadState').innerHTML = '';
+      var d = document.createElement('div');
+      d.className = 'fail';
+      d.textContent = 'โหลดปฏิทินไม่สำเร็จ ' + err.message +
+                      ' ลองโหลดหน้าใหม่อีกครั้ง หากยังไม่ได้ให้แจ้งงานเทคโนโลยีสารสนเทศ';
+      $('loadState').appendChild(d);
     });
 })();
 </script>
-
-</div>
 </body>
 </html>
