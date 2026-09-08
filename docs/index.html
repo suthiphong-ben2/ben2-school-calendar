@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ปฏิทินวิชาการและกิจกรรม — โรงเรียนเบญจมราชรังสฤษฎิ์ ๒</title>
+<style>
+  body { margin: 0; background: #f4f6f9; }
+  .page { max-width: 1080px; margin: 0 auto; padding: 24px 16px 48px; }
+</style>
+</head>
+<body>
+<div class="page">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@600&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  #ben2cal {
+    --ink: #1b2a4a; --accent: #b3271e;
+    --card: #ffffff; --line: #d8dee8; --muted: #5f6b80;
+    font-family: 'Sarabun', system-ui, sans-serif;
+    color: var(--ink); line-height: 1.65; font-size: 16px;
+  }
+  #ben2cal * { box-sizing: border-box; }
+
+  #ben2cal .head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
+  #ben2cal .head h2 {
+    font-family: 'Noto Serif Thai', serif; font-weight: 600;
+    font-size: clamp(1.4rem, 4vw, 1.9rem); margin: 0; color: var(--ink);
+  }
+  #ben2cal .head p { margin: 0; color: var(--muted); font-size: .95rem; }
+  #ben2cal .rule { height: 3px; background: var(--accent); width: 64px; margin: 14px 0 20px; }
+
+  #ben2cal .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+  #ben2cal .chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    border: 1px solid var(--line); background: var(--card); color: var(--ink);
+    border-radius: 999px; padding: 6px 14px 6px 11px;
+    font-size: .9rem; font-family: inherit; cursor: pointer;
+  }
+  #ben2cal .chip .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+  #ben2cal .chip[aria-pressed="false"] { opacity: .42; }
+
+  #ben2cal .toolbar {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    align-items: center; justify-content: space-between; margin-bottom: 14px;
+  }
+  #ben2cal .month { font-family: 'Noto Serif Thai', serif; font-size: 1.3rem; font-weight: 600; margin: 0; }
+  #ben2cal .nav { display: flex; gap: 6px; flex-wrap: wrap; }
+  #ben2cal .btn {
+    font-family: inherit; font-size: .92rem; padding: 7px 14px;
+    border: 1px solid var(--line); background: var(--card); color: var(--ink);
+    border-radius: 6px; cursor: pointer;
+  }
+  #ben2cal .btn[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+  #ben2cal .btn:focus-visible, #ben2cal .chip:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+  #ben2cal .board { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
+  #ben2cal .fc { --fc-border-color: var(--line); --fc-today-bg-color: #fff4f3; font-family: inherit; }
+  #ben2cal .fc .fc-daygrid-day-number { font-size: .88rem; padding: 5px 7px; }
+  #ben2cal .fc .fc-col-header-cell-cushion { font-weight: 600; font-size: .88rem; padding: 8px 4px; color: var(--muted); }
+  #ben2cal .fc-event { border: none; font-size: .82rem; padding: 1px 4px; cursor: pointer; }
+  #ben2cal .fc .fc-day-today .fc-daygrid-day-number { color: var(--accent); font-weight: 600; }
+  #ben2cal .state { padding: 40px 10px; text-align: center; color: var(--muted); font-size: .95rem; }
+
+  #ben2detail {
+    border: 1px solid #d8dee8; border-radius: 12px; padding: 0;
+    max-width: 460px; width: calc(100% - 32px);
+    font-family: 'Sarabun', system-ui, sans-serif; color: #1b2a4a;
+  }
+  #ben2detail::backdrop { background: rgba(15, 22, 38, .45); }
+  #ben2detail .dhead { padding: 18px 20px 12px; border-bottom: 1px solid #d8dee8; }
+  #ben2detail .dhead h3 { font-family: 'Noto Serif Thai', serif; font-size: 1.15rem; margin: 6px 0 0; font-weight: 600; }
+  #ben2detail .tag { display: inline-block; font-size: .78rem; color: #fff; padding: 2px 10px; border-radius: 999px; }
+  #ben2detail .dbody { padding: 14px 20px 18px; }
+  #ben2detail dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; margin: 0; font-size: .93rem; }
+  #ben2detail dt { color: #5f6b80; }
+  #ben2detail dd { margin: 0; }
+  #ben2detail .note { margin: 14px 0 0; font-size: .93rem; white-space: pre-wrap; }
+  #ben2detail .dfoot { padding: 0 20px 18px; text-align: right; }
+  #ben2detail .btn {
+    font-family: inherit; font-size: .92rem; padding: 7px 14px;
+    border: 1px solid #d8dee8; background: #fff; color: #1b2a4a; border-radius: 6px; cursor: pointer;
+  }
+
+  @media (max-width: 560px) {
+    #ben2cal .fc .fc-col-header-cell-cushion { font-size: .78rem; }
+    #ben2cal .fc-event { font-size: .74rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { #ben2cal * { transition: none !important; animation: none !important; } }
+</style>
+
+<div id="ben2cal">
+  <div class="head">
+    <h2>ปฏิทินวิชาการและกิจกรรม</h2>
+    <p>โรงเรียนเบญจมราชรังสฤษฎิ์ ๒</p>
+  </div>
+  <div class="rule"></div>
+
+  <div class="filters" id="ben2filters"></div>
+
+  <div class="toolbar">
+    <h3 class="month" id="ben2month">&nbsp;</h3>
+    <div class="nav">
+      <button class="btn" id="ben2prev"  type="button" aria-label="เดือนก่อนหน้า">‹</button>
+      <button class="btn" id="ben2today" type="button">วันนี้</button>
+      <button class="btn" id="ben2next"  type="button" aria-label="เดือนถัดไป">›</button>
+      <button class="btn" id="ben2m" type="button" aria-pressed="true">เดือน</button>
+      <button class="btn" id="ben2l" type="button" aria-pressed="false">รายการ</button>
+    </div>
+  </div>
+
+  <div class="board">
+    <div class="state" id="ben2state">กำลังโหลดปฏิทิน</div>
+    <div id="ben2grid" style="display:none"></div>
+  </div>
+</div>
+
+<dialog id="ben2detail">
+  <div class="dhead">
+    <span class="tag" id="ben2tag"></span>
+    <h3 id="ben2title"></h3>
+  </div>
+  <div class="dbody">
+    <dl>
+      <dt>วันที่</dt><dd id="ben2date"></dd>
+      <dt>เวลา</dt><dd id="ben2time"></dd>
+      <dt>สถานที่</dt><dd id="ben2place"></dd>
+      <dt>ผู้รับผิดชอบ</dt><dd id="ben2dept"></dd>
+    </dl>
+    <p class="note" id="ben2note"></p>
+  </div>
+  <div class="dfoot"><button class="btn" id="ben2close" type="button">ปิด</button></div>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/locales/th.global.min.js"></script>
+<script>
+(function () {
+  // ===== แก้บรรทัดนี้ =====
+  const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxzmh0hi1hP9XfEZeRdDMaxnSU8S3xSz9iB2IpD1ivRLdo05JN_b6llPk4Y9tanRKk2/exec';
+  // ========================
+
+  const state  = document.getElementById('ben2state');
+  const grid   = document.getElementById('ben2grid');
+  const monthT = document.getElementById('ben2month');
+  const dialog = document.getElementById('ben2detail');
+  const chipBox = document.getElementById('ben2filters');
+
+  let allEvents = [];
+  let active = new Set();
+  let calendar = null;
+
+  function show(el, on) { el.style.display = on ? '' : 'none'; }
+
+  function buildChips(events) {
+    const seen = new Map();
+    events.forEach(e => {
+      const c = e.extendedProps && e.extendedProps.category;
+      if (c && !seen.has(c)) seen.set(c, e.color);
+    });
+    seen.forEach((color, name) => {
+      active.add(name);
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chip';
+      b.setAttribute('aria-pressed', 'true');
+      b.innerHTML = '<span class="dot" style="background:' + color + '"></span>';
+      b.appendChild(document.createTextNode(name));
+      b.onclick = function () {
+        const on = b.getAttribute('aria-pressed') === 'true';
+        b.setAttribute('aria-pressed', String(!on));
+        if (on) { active.delete(name); } else { active.add(name); }
+        calendar.refetchEvents();
+      };
+      chipBox.appendChild(b);
+    });
+  }
+
+  function render() {
+    calendar = new FullCalendar.Calendar(grid, {
+      initialView: window.innerWidth < 640 ? 'listMonth' : 'dayGridMonth',
+      locale: 'th',
+      headerToolbar: false,
+      height: 'auto',
+      dayMaxEventRows: 4,
+      displayEventTime: false,
+      noEventsText: 'เดือนนี้ยังไม่มีกิจกรรม',
+      events: function (info, success) {
+        success(allEvents.filter(function (e) {
+          return active.has(e.extendedProps.category);
+        }));
+      },
+      eventClick: function (info) {
+        info.jsEvent.preventDefault();
+        const p = info.event.extendedProps;
+        const tag = document.getElementById('ben2tag');
+        tag.textContent = p.category || '';
+        tag.style.background = info.event.backgroundColor || '#3b5f8a';
+        document.getElementById('ben2title').textContent = info.event.title;
+        document.getElementById('ben2date').textContent  = p.dateText || '';
+        document.getElementById('ben2time').textContent  = p.timeText || 'ตลอดวัน';
+        document.getElementById('ben2place').textContent = p.location || '—';
+        document.getElementById('ben2dept').textContent  = p.dept || '—';
+        document.getElementById('ben2note').textContent  = p.detail || '';
+        dialog.showModal();
+      },
+      datesSet: function (info) {
+        monthT.textContent = info.view.title.replace(/\d{4}/g, function (y) {
+          return String(Number(y) + 543);
+        });
+      }
+    });
+
+    calendar.render();
+
+    document.getElementById('ben2prev').onclick  = function () { calendar.prev(); };
+    document.getElementById('ben2next').onclick  = function () { calendar.next(); };
+    document.getElementById('ben2today').onclick = function () { calendar.today(); };
+    document.getElementById('ben2close').onclick = function () { dialog.close(); };
+
+    const bm = document.getElementById('ben2m');
+    const bl = document.getElementById('ben2l');
+    function setView(v) {
+      calendar.changeView(v);
+      bm.setAttribute('aria-pressed', String(v === 'dayGridMonth'));
+      bl.setAttribute('aria-pressed', String(v === 'listMonth'));
+    }
+    bm.onclick = function () { setView('dayGridMonth'); };
+    bl.onclick = function () { setView('listMonth'); };
+    setView(calendar.view.type);
+  }
+
+  fetch(WEB_APP_URL)
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      if (data && data.error) { throw new Error(data.error); }
+      allEvents = Array.isArray(data) ? data : [];
+      buildChips(allEvents);
+      show(state, false);
+      show(grid, true);
+      render();
+    })
+    .catch(function (err) {
+      state.textContent = 'โหลดปฏิทินไม่สำเร็จ ' + err.message;
+    });
+})();
+</script>
+
+</div>
+</body>
+</html>

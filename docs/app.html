@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>กรอกกิจกรรมลงปฏิทิน</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@600&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1b2a4a; --accent: #b3271e;
+    --paper: #f4f6f9; --card: #fff; --line: #d8dee8; --muted: #5f6b80;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: 'Sarabun', system-ui, sans-serif; line-height: 1.65;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 24px 16px 56px; }
+
+  h1 { font-family: 'Noto Serif Thai', serif; font-size: 1.6rem; margin: 0 0 2px; }
+  h2 { font-family: 'Noto Serif Thai', serif; font-size: 1.15rem; margin: 32px 0 12px; }
+  .who { color: var(--muted); font-size: .95rem; margin: 0 0 18px; }
+  .who a { color: var(--ink); cursor: pointer; }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 20px; }
+
+  .msg { padding: 12px 16px; border-radius: 8px; margin-bottom: 18px; font-size: .95rem; }
+  .msg.ok  { background: #e7f4ec; border-left: 4px solid #1f7a5a; }
+  .msg.err { background: #fdecea; border-left: 4px solid var(--accent); }
+
+  label { display: block; font-size: .9rem; font-weight: 500; margin-bottom: 5px; }
+  input, select, textarea {
+    width: 100%; font-family: inherit; font-size: 1rem; padding: 9px 11px;
+    border: 1px solid var(--line); border-radius: 6px; background: #fff; color: var(--ink);
+  }
+  textarea { min-height: 88px; resize: vertical; }
+  .field { margin-bottom: 16px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .check { display: flex; align-items: center; gap: 8px; }
+  .check input { width: auto; }
+  .hint { font-size: .84rem; color: var(--muted); margin: 4px 0 0; }
+
+  button {
+    font-family: inherit; font-size: .95rem; padding: 9px 18px; border-radius: 6px;
+    border: 1px solid var(--line); background: #fff; color: var(--ink); cursor: pointer;
+  }
+  button.primary { background: var(--ink); border-color: var(--ink); color: #fff; }
+  button.danger  { color: var(--accent); border-color: #f0c9c6; }
+  button:disabled { opacity: .5; cursor: default; }
+  button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: 3px solid var(--accent); outline-offset: 2px;
+  }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; align-items: center; }
+
+  .item {
+    background: var(--card); border: 1px solid var(--line); border-left-width: 4px;
+    border-radius: 8px; padding: 14px 16px; margin-bottom: 10px;
+  }
+  .item.pending  { border-left-color: #8a8a8a; }
+  .item.approved { border-left-color: #1f7a5a; }
+  .item.rejected { border-left-color: var(--accent); }
+  .item h3 { margin: 0 0 4px; font-size: 1.02rem; font-weight: 600; }
+  .item .meta { font-size: .88rem; color: var(--muted); margin: 0; }
+  .item .actions { margin-top: 10px; }
+  .item button { padding: 5px 12px; font-size: .87rem; }
+  .item input.note { flex: 1 1 180px; padding: 5px 10px; font-size: .87rem; width: auto; }
+
+  .badge { font-size: .8rem; padding: 1px 9px; border-radius: 999px; background: #eef2f7; color: var(--muted); }
+  .empty { color: var(--muted); font-size: .93rem; }
+  .hide { display: none; }
+  @media (max-width: 560px) { .row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div id="msgBox"></div>
+
+  <!-- ---------- หน้าเข้าสู่ระบบ ---------- -->
+  <section id="loginView">
+    <h1>กรอกกิจกรรมลงปฏิทิน</h1>
+    <p class="who" id="loginSub">กำลังโหลด</p>
+
+    <div class="card">
+      <div class="field">
+        <label for="deptSel">ฝ่าย / กลุ่มงาน</label>
+        <select id="deptSel"></select>
+      </div>
+      <div class="field">
+        <label for="codeInp">รหัสประจำฝ่าย</label>
+        <input type="password" id="codeInp" autocomplete="current-password">
+        <p class="hint">ขอรหัสได้ที่งานเทคโนโลยีสารสนเทศ</p>
+      </div>
+      <button class="primary" id="loginBtn">เข้าสู่ระบบ</button>
+    </div>
+  </section>
+
+  <!-- ---------- หน้าทำงาน ---------- -->
+  <section id="workView" class="hide">
+    <h1 id="workTitle">กรอกกิจกรรมลงปฏิทิน</h1>
+    <p class="who"><span id="whoName"></span> · <a id="logoutLink">ออกจากระบบ</a></p>
+
+    <div class="card">
+      <h2 id="formTitle" style="margin-top:0">เพิ่มกิจกรรมใหม่</h2>
+
+      <input type="hidden" id="evId">
+
+      <div class="field">
+        <label for="fTitle">ชื่อกิจกรรม</label>
+        <input type="text" id="fTitle" maxlength="200" placeholder="เช่น สอบกลางภาค ภาคเรียนที่ 2">
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="fStart">วันที่เริ่ม</label>
+          <input type="date" id="fStart">
+        </div>
+        <div class="field">
+          <label for="fEnd">วันที่สิ้นสุด</label>
+          <input type="date" id="fEnd">
+          <p class="hint">กิจกรรมวันเดียวเว้นว่างไว้ได้</p>
+        </div>
+      </div>
+
+      <div class="field check">
+        <input type="checkbox" id="fAllDay" checked>
+        <label for="fAllDay" style="margin:0">จัดตลอดวัน ไม่ระบุเวลา</label>
+      </div>
+
+      <div class="row" id="timeRow">
+        <div class="field">
+          <label for="fStartT">เวลาเริ่ม</label>
+          <input type="time" id="fStartT" value="08:30">
+        </div>
+        <div class="field">
+          <label for="fEndT">เวลาสิ้นสุด</label>
+          <input type="time" id="fEndT" value="16:30">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="fCat">ประเภทกิจกรรม</label>
+          <select id="fCat"></select>
+        </div>
+        <div class="field">
+          <label for="fLoc">สถานที่</label>
+          <input type="text" id="fLoc" maxlength="160" placeholder="เช่น หอประชุม">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="fDetail">รายละเอียดเพิ่มเติม</label>
+        <textarea id="fDetail" placeholder="กลุ่มเป้าหมาย การแต่งกาย สิ่งที่ต้องเตรียม"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="fAuthor">ชื่อครูผู้กรอก</label>
+        <input type="text" id="fAuthor" maxlength="120" placeholder="เช่น ครูสุทธิพงษ์ สุขสร้อย">
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="saveBtn">ส่งให้ฝ่ายวิชาการอนุมัติ</button>
+        <button id="cancelBtn" class="hide">ยกเลิกการแก้ไข</button>
+      </div>
+    </div>
+
+    <div id="pendingWrap" class="hide">
+      <h2>รออนุมัติ <span class="badge" id="pendingCount">0</span></h2>
+      <div id="pendingList"></div>
+    </div>
+
+    <h2 id="mineHeading">กิจกรรมของฝ่ายท่าน</h2>
+    <div id="mineList"></div>
+  </section>
+</div>
+
+<script>
+(function () {
+  // ============ แก้บรรทัดนี้บรรทัดเดียว ============
+  var API_URL = 'https://script.google.com/macros/s/AKfycbxzmh0hi1hP9XfEZeRdDMaxnSU8S3xSz9iB2IpD1ivRLdo05JN_b6llPk4Y9tanRKk2/exec?api=events';
+  // ===============================================
+
+  var auth = null;        // { dept, code }
+  var me   = null;        // { name, role, approver }
+  var cats = [];
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  function show(el, on) { el.classList.toggle('hide', !on); }
+
+  /**
+   * ส่งคำสั่งไปที่ Apps Script
+   * ส่งเป็นข้อความธรรมดาโดยไม่ตั้ง header เพื่อให้เบราว์เซอร์ไม่ต้องถาม preflight ก่อน
+   */
+  function api(action, payload) {
+    return fetch(API_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: action, auth: auth, payload: payload || {} })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (res) {
+      if (!res || !res.ok) throw new Error((res && res.error) || 'เชื่อมต่อระบบไม่สำเร็จ');
+      return res.data;
+    });
+  }
+
+  function flash(text, kind) {
+    $('msgBox').innerHTML = '';
+    if (!text) return;
+    var d = document.createElement('div');
+    d.className = 'msg ' + (kind || 'ok');
+    d.textContent = text;
+    $('msgBox').appendChild(d);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function busy(btn, on, labelOn, labelOff) {
+    btn.disabled = on;
+    btn.textContent = on ? labelOn : labelOff;
+  }
+
+  // ---------- เริ่มต้น ----------
+  api('boot')
+    .then(function (cfg) {
+      $('loginSub').textContent = cfg.school + ' · เลือกฝ่ายของท่านแล้วกรอกรหัสประจำฝ่าย';
+      cfg.depts.forEach(function (d) {
+        var o = document.createElement('option');
+        o.value = d; o.textContent = d;
+        $('deptSel').appendChild(o);
+      });
+      cats = cfg.categories;
+      cats.forEach(function (c) {
+        var o = document.createElement('option');
+        o.value = c.name; o.textContent = c.name;
+        $('fCat').appendChild(o);
+      });
+    })
+    .catch(function (e) { flash(e.message, 'err'); });
+
+  // ---------- เข้าสู่ระบบ ----------
+  $('loginBtn').onclick = function () {
+    var a = { dept: $('deptSel').value, code: $('codeInp').value };
+    busy($('loginBtn'), true, 'กำลังตรวจสอบ', 'เข้าสู่ระบบ');
+
+    auth = a;   // api() ส่ง auth ไปด้วยทุกครั้ง
+    api('login')
+      .then(function (u) {
+        busy($('loginBtn'), false, '', 'เข้าสู่ระบบ');
+        me = u;
+        $('whoName').textContent = u.name;
+        $('workTitle').textContent = u.approver ? 'จัดการปฏิทินกิจกรรม' : 'กรอกกิจกรรมลงปฏิทิน';
+        $('saveBtn').textContent = u.approver ? 'เพิ่มลงปฏิทิน' : 'ส่งให้ฝ่ายวิชาการอนุมัติ';
+        $('mineHeading').textContent = u.approver ? 'กิจกรรมที่กำลังจะถึง' : 'กิจกรรมของฝ่ายท่าน';
+        show($('pendingWrap'), u.approver);
+        show($('loginView'), false);
+        show($('workView'), true);
+        flash('', null);
+        refresh();
+      })
+      .catch(function (e) {
+        auth = null;
+        busy($('loginBtn'), false, '', 'เข้าสู่ระบบ');
+        flash(e.message, 'err');
+      });
+  };
+
+  $('codeInp').addEventListener('keydown', function (ev) {
+    if (ev.key === 'Enter') $('loginBtn').click();
+  });
+
+  $('logoutLink').onclick = function () {
+    auth = null; me = null;
+    $('codeInp').value = '';
+    show($('workView'), false);
+    show($('loginView'), true);
+    flash('', null);
+  };
+
+  // ---------- ฟอร์ม ----------
+  $('fAllDay').addEventListener('change', syncTime);
+  function syncTime() { show($('timeRow'), !$('fAllDay').checked); }
+  syncTime();
+
+  $('fStart').addEventListener('change', function () {
+    if (!$('fEnd').value) $('fEnd').value = $('fStart').value;
+  });
+
+  function clearForm() {
+    $('evId').value = '';
+    ['fTitle', 'fStart', 'fEnd', 'fLoc', 'fDetail'].forEach(function (id) { $(id).value = ''; });
+    $('fAllDay').checked = true;
+    $('fStartT').value = '08:30';
+    $('fEndT').value = '16:30';
+    syncTime();
+    $('formTitle').textContent = 'เพิ่มกิจกรรมใหม่';
+    $('saveBtn').textContent = me && me.approver ? 'เพิ่มลงปฏิทิน' : 'ส่งให้ฝ่ายวิชาการอนุมัติ';
+    show($('cancelBtn'), false);
+  }
+
+  $('cancelBtn').onclick = function () { clearForm(); flash('', null); };
+
+  $('saveBtn').onclick = function () {
+    var ev = {
+      id:        $('evId').value,
+      title:     $('fTitle').value,
+      startDate: $('fStart').value,
+      endDate:   $('fEnd').value,
+      allDay:    $('fAllDay').checked,
+      startTime: $('fStartT').value,
+      endTime:   $('fEndT').value,
+      category:  $('fCat').value,
+      location:  $('fLoc').value,
+      detail:    $('fDetail').value,
+      author:    $('fAuthor').value
+    };
+    var label = $('saveBtn').textContent;
+    busy($('saveBtn'), true, 'กำลังบันทึก', label);
+
+    api('save', ev)
+      .then(function (r) {
+        busy($('saveBtn'), false, '', label);
+        var author = $('fAuthor').value;
+        clearForm();
+        $('fAuthor').value = author;      // ครูคนเดิมมักกรอกหลายรายการติดกัน
+        flash(r.msg, 'ok');
+        refresh();
+      })
+      .catch(function (e) {
+        busy($('saveBtn'), false, '', label);
+        flash(e.message, 'err');
+      });
+  };
+
+  // ---------- รายการ ----------
+  function refresh() {
+    api('list')
+      .then(function (data) {
+        renderPending(data.pending || []);
+        renderMine(data.mine || []);
+      })
+      .catch(function (e) { flash(e.message, 'err'); });
+  }
+
+  function metaLine(it, withDept) {
+    var parts = [it.dateText, it.category];
+    if (withDept) parts.push(it.dept);
+    if (it.location) parts.push(it.location);
+    if (it.author) parts.push('โดย ' + it.author);
+    return parts.join(' · ');
+  }
+
+  function renderPending(list) {
+    $('pendingCount').textContent = list.length;
+    var box = $('pendingList');
+    box.innerHTML = '';
+    if (!list.length) {
+      box.innerHTML = '<p class="empty">ไม่มีกิจกรรมค้างอนุมัติ</p>';
+      return;
+    }
+    list.forEach(function (it) {
+      var d = document.createElement('div');
+      d.className = 'item pending';
+
+      var h = document.createElement('h3');
+      h.textContent = it.title;
+      var m = document.createElement('p');
+      m.className = 'meta';
+      m.textContent = metaLine(it, true);
+
+      var act = document.createElement('div');
+      act.className = 'actions';
+
+      var note = document.createElement('input');
+      note.type = 'text'; note.className = 'note';
+      note.placeholder = 'เหตุผลกรณีตีกลับ';
+
+      var ok = document.createElement('button');
+      ok.className = 'primary'; ok.textContent = 'อนุมัติ';
+      ok.onclick = function () { review(it.id, 'approve', note.value, ok); };
+
+      var no = document.createElement('button');
+      no.className = 'danger'; no.textContent = 'ตีกลับ';
+      no.onclick = function () { review(it.id, 'reject', note.value, no); };
+
+      var ed = document.createElement('button');
+      ed.textContent = 'แก้ไข';
+      ed.onclick = function () { loadToForm(it); };
+
+      act.appendChild(note); act.appendChild(ok); act.appendChild(no); act.appendChild(ed);
+      d.appendChild(h); d.appendChild(m); d.appendChild(act);
+      box.appendChild(d);
+    });
+  }
+
+  function renderMine(list) {
+    var box = $('mineList');
+    box.innerHTML = '';
+    if (!list.length) {
+      box.innerHTML = '<p class="empty">ยังไม่มีกิจกรรมในช่วงข้างหน้า เพิ่มได้จากฟอร์มด้านบน</p>';
+      return;
+    }
+    list.forEach(function (it) {
+      var cls = it.status === 'อนุมัติ' ? 'approved'
+              : it.status === 'ตีกลับ' ? 'rejected' : 'pending';
+      var d = document.createElement('div');
+      d.className = 'item ' + cls;
+
+      var h = document.createElement('h3');
+      h.textContent = it.title + ' ';
+      var b = document.createElement('span');
+      b.className = 'badge'; b.textContent = it.status;
+      h.appendChild(b);
+
+      var m = document.createElement('p');
+      m.className = 'meta';
+      m.textContent = metaLine(it, me && me.approver);
+
+      d.appendChild(h); d.appendChild(m);
+
+      if (it.status === 'ตีกลับ' && it.note) {
+        var n = document.createElement('p');
+        n.className = 'meta';
+        n.textContent = 'เหตุผลที่ตีกลับ: ' + it.note;
+        d.appendChild(n);
+      }
+
+      var act = document.createElement('div');
+      act.className = 'actions';
+
+      var ed = document.createElement('button');
+      ed.textContent = 'แก้ไข';
+      ed.onclick = function () { loadToForm(it); };
+
+      var rm = document.createElement('button');
+      rm.className = 'danger'; rm.textContent = 'ลบ';
+      rm.onclick = function () {
+        if (!confirm('ลบกิจกรรม "' + it.title + '" ออกจากปฏิทิน')) return;
+        rm.disabled = true;
+        api('delete', { id: it.id })
+          .then(function (r) { flash(r.msg, 'ok'); refresh(); })
+          .catch(function (e) { rm.disabled = false; flash(e.message, 'err'); });
+      };
+
+      act.appendChild(ed); act.appendChild(rm);
+      d.appendChild(act);
+      box.appendChild(d);
+    });
+  }
+
+  function review(id, decision, note, btn) {
+    btn.disabled = true;
+    api('review', { id: id, decision: decision, note: note })
+      .then(function (r) { flash(r.msg, 'ok'); refresh(); })
+      .catch(function (e) { btn.disabled = false; flash(e.message, 'err'); });
+  }
+
+  function loadToForm(it) {
+    $('evId').value    = it.id;
+    $('fTitle').value  = it.title;
+    $('fStart').value  = it.startDate;
+    $('fEnd').value    = it.endDate;
+    $('fAllDay').checked = it.allDay;
+    $('fStartT').value = it.startTime || '08:30';
+    $('fEndT').value   = it.endTime || '16:30';
+    $('fCat').value    = it.category;
+    $('fLoc').value    = it.location;
+    $('fDetail').value = it.detail;
+    $('fAuthor').value = it.author;
+    syncTime();
+    $('formTitle').textContent = 'แก้ไขกิจกรรม';
+    $('saveBtn').textContent = 'บันทึกการแก้ไข';
+    show($('cancelBtn'), true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+})();
+</script>
+</body>
+</html>
