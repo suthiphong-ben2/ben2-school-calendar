@@ -4,10 +4,26 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ปฏิทินวิชาการและกิจกรรม — โรงเรียนเบญจมราชรังสฤษฎิ์ ๒</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script>
+/* อ่านพารามิเตอร์ท้าย URL แล้วติดคลาสไว้ที่ <html> ตั้งแต่ก่อนหน้าเว็บวาด
+   embed=1     ซ่อนแถบหัวเรื่องกับปุ่มกรอกกิจกรรม ใช้ตอนฝังในเว็บโรงเรียน
+   agenda=0    ซ่อนลิสต์กิจกรรมใต้ปฏิทิน
+   filters=0   ซ่อนปุ่มกรองประเภท                                        */
+(function () {
+  var q = new URLSearchParams(location.search);
+  var c = document.documentElement.classList;
+  if (q.get('embed') === '1')   c.add('embed');
+  if (q.get('agenda') === '0')  c.add('no-agenda');
+  if (q.get('filters') === '0') c.add('no-filters');
+})();
+</script>
 
 <style>
   :root {
@@ -222,6 +238,18 @@
   .detail-note { margin: 15px 0 0; font-size: .93rem; white-space: pre-wrap; }
   .detail-foot { padding: 0 22px 18px; text-align: right; }
 
+  /* ---------- โหมดฝังในเว็บอื่น ---------- */
+  .embed body { background: transparent; }
+  .embed .page { padding: 0 0 8px; max-width: none; }
+  .embed .masthead { display: none; }
+  .embed .controls {
+    border-top: 1px solid var(--line);
+    border-radius: 12px;
+  }
+  .no-agenda .agenda { display: none !important; }
+  .no-filters .filters { display: none; }
+  .no-filters .navbar { margin-top: 0; padding-top: 0; border-top: none; }
+
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 
   @media (max-width: 600px) {
@@ -388,6 +416,7 @@
   // ---------- ลิสต์กิจกรรมของเดือนที่เปิดอยู่ ----------
   function drawAgenda() {
     if (!calendar) return;
+    if (document.documentElement.classList.contains('no-agenda')) return;
 
     // มุมมองรายการแสดงข้อมูลชุดเดียวกันอยู่แล้ว ไม่ต้องซ้ำ
     if (calendar.view.type !== 'dayGridMonth') {
