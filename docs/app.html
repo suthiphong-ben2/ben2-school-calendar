@@ -9,8 +9,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@600&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ink: #1b2a4a; --accent: #b3271e;
-    --paper: #f4f6f9; --card: #fff; --line: #d8dee8; --muted: #5f6b80;
+    --ink: #12315e;         /* น้ำเงินเข้ม สีหลัก */
+    --navy-deep: #0b2247;
+    --accent: #f0b429;      /* เหลืองทอง สีเน้น */
+    --gold-tint: #fff6e0;
+    --danger: #a8443c;      /* ใช้เฉพาะปุ่มลบและข้อความแจ้งข้อผิดพลาด */
+    --paper: #f5f7fa; --card: #fff; --line: #d5dce8; --muted: #5a6a85;
   }
   * { box-sizing: border-box; }
   body {
@@ -18,6 +22,34 @@
     font-family: 'Sarabun', system-ui, sans-serif; line-height: 1.65;
   }
   .wrap { max-width: 880px; margin: 0 auto; padding: 24px 16px 56px; }
+
+  .brand {
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    background: var(--navy-deep);
+    border-bottom: 5px solid var(--accent);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+  }
+  .brand .crest {
+    width: 56px; height: 56px; flex: none;
+    background: #fff; border-radius: 9px; padding: 6px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .brand .crest img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .brand .crest.empty { display: none; }
+  .brand .brandtext { flex: 1 1 200px; color: #fff; }
+  .brand .brandtext strong {
+    display: block; font-family: 'Noto Serif Thai', serif; font-size: 1.1rem; font-weight: 600;
+  }
+  .brand .brandtext span { color: #b9c8e0; font-size: .9rem; }
+  .brand .back {
+    font-size: .92rem; font-weight: 600; text-decoration: none; white-space: nowrap;
+    padding: 9px 17px; border-radius: 6px;
+    border: 1px solid #d99f1c; background: var(--accent); color: var(--navy-deep);
+  }
+  .brand .back:hover { background: #ffc63f; }
+  .brand .back:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
 
   h1 { font-family: 'Noto Serif Thai', serif; font-size: 1.6rem; margin: 0 0 2px; }
   h2 { font-family: 'Noto Serif Thai', serif; font-size: 1.15rem; margin: 32px 0 12px; }
@@ -28,7 +60,7 @@
 
   .msg { padding: 12px 16px; border-radius: 8px; margin-bottom: 18px; font-size: .95rem; }
   .msg.ok  { background: #e7f4ec; border-left: 4px solid #1f7a5a; }
-  .msg.err { background: #fdecea; border-left: 4px solid var(--accent); }
+  .msg.err { background: #fdecea; border-left: 4px solid var(--danger); }
 
   label { display: block; font-size: .9rem; font-weight: 500; margin-bottom: 5px; }
   input, select, textarea {
@@ -47,7 +79,7 @@
     border: 1px solid var(--line); background: #fff; color: var(--ink); cursor: pointer;
   }
   button.primary { background: var(--ink); border-color: var(--ink); color: #fff; }
-  button.danger  { color: var(--accent); border-color: #f0c9c6; }
+  button.danger  { color: var(--danger); border-color: #eec4c0; }
   button:disabled { opacity: .5; cursor: default; }
   button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
     outline: 3px solid var(--accent); outline-offset: 2px;
@@ -60,7 +92,8 @@
   }
   .item.pending  { border-left-color: #8a8a8a; }
   .item.approved { border-left-color: #1f7a5a; }
-  .item.rejected { border-left-color: var(--accent); }
+  .item.approved .badge { background: #e7f4ec; color: #1f7a5a; }
+  .item.rejected { border-left-color: var(--danger); }
   .item h3 { margin: 0 0 4px; font-size: 1.02rem; font-weight: 600; }
   .item .meta { font-size: .88rem; color: var(--muted); margin: 0; }
   .item .actions { margin-top: 10px; }
@@ -70,17 +103,35 @@
   .badge { font-size: .8rem; padding: 1px 9px; border-radius: 999px; background: #eef2f7; color: var(--muted); }
   .empty { color: var(--muted); font-size: .93rem; }
   .hide { display: none; }
-  @media (max-width: 560px) { .row { grid-template-columns: 1fr; } }
+  @media (max-width: 560px) {
+    .row { grid-template-columns: 1fr; }
+    .brand { padding: 14px 16px; }
+    .brand .crest { width: 46px; height: 46px; }
+    .brand .back { flex: 1 1 100%; text-align: center; }
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
 
+  <div class="brand">
+    <!-- วางไฟล์ตราโรงเรียนชื่อ logo.png ไว้ในโฟลเดอร์ docs ถ้าไม่มีไฟล์ ช่องนี้จะซ่อนเอง -->
+    <span class="crest" id="crest">
+      <img src="logo.png" alt="ตราโรงเรียนเบญจมราชรังสฤษฎิ์ ๒"
+           onerror="document.getElementById('crest').classList.add('empty')">
+    </span>
+    <div class="brandtext">
+      <strong>ปฏิทินวิชาการและกิจกรรม</strong>
+      <span>โรงเรียนเบญจมราชรังสฤษฎิ์ ๒</span>
+    </div>
+    <a class="back" href="index.html">ดูปฏิทิน</a>
+  </div>
+
   <div id="msgBox"></div>
 
   <!-- ---------- หน้าเข้าสู่ระบบ ---------- -->
   <section id="loginView">
-    <h1>กรอกกิจกรรมลงปฏิทิน</h1>
+    <h1>เข้าสู่ระบบเพื่อกรอกกิจกรรม</h1>
     <p class="who" id="loginSub">กำลังโหลด</p>
 
     <div class="card">
