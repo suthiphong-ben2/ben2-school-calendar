@@ -15,13 +15,15 @@
 /* อ่านพารามิเตอร์ท้าย URL แล้วติดคลาสไว้ที่ <html> ตั้งแต่ก่อนหน้าเว็บวาด
    embed=1     ซ่อนแถบหัวเรื่องกับปุ่มกรอกกิจกรรม ใช้ตอนฝังในเว็บโรงเรียน
    agenda=0    ซ่อนลิสต์กิจกรรมใต้ปฏิทิน
-   filters=0   ซ่อนปุ่มกรองประเภท                                        */
+   filters=0   ซ่อนปุ่มกรองประเภท
+   credit=0    ซ่อนบรรทัดผู้พัฒนาระบบ                                     */
 (function () {
   var q = new URLSearchParams(location.search);
   var c = document.documentElement.classList;
   if (q.get('embed') === '1')   c.add('embed');
   if (q.get('agenda') === '0')  c.add('no-agenda');
   if (q.get('filters') === '0') c.add('no-filters');
+  if (q.get('credit') === '0')  c.add('no-credit');
 })();
 </script>
 
@@ -206,6 +208,12 @@
     color: var(--muted); font-size: .93rem;
   }
 
+  .credit {
+    margin-top: 34px; padding-top: 16px;
+    border-top: 1px solid var(--line);
+    text-align: center; font-size: .86rem; color: var(--muted);
+  }
+
   .loading { padding: 46px 12px; text-align: center; color: var(--muted); }
   .fail {
     background: #fdecea; border-left: 4px solid #a8443c;
@@ -249,6 +257,7 @@
   .no-agenda .agenda { display: none !important; }
   .no-filters .filters { display: none; }
   .no-filters .navbar { margin-top: 0; padding-top: 0; border-top: none; }
+  .no-credit .credit { display: none; }
 
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 
@@ -304,6 +313,8 @@
     <p class="lead" id="agendaLead">เรียงตามวันที่</p>
     <div id="agendaList"></div>
   </section>
+
+  <p class="credit">พัฒนาระบบโดย ครูสุทธิพงษ์ สุขสร้อย</p>
 </div>
 
 <dialog class="detail" id="detail">
