@@ -19,6 +19,9 @@
     --paper:     #eef1f6;
     --line:      #d5dce8;
     --muted:     #5a6a85;
+
+    --sheet-w: 794px;    /* A4 กว้าง 210mm ที่ 96dpi */
+    --sheet-h: 1123px;   /* A4 สูง 297mm */
   }
   * { box-sizing: border-box; }
 
@@ -27,138 +30,163 @@
     font-family: 'Sarabun', system-ui, sans-serif; line-height: 1.6;
   }
 
-  /* ---------- แถบเครื่องมือ ไม่ติดไปกับรูปที่บันทึก ---------- */
-  .toolbar {
+  /* ---------- แถบเครื่องมือ ไม่ติดไปกับไฟล์ที่บันทึก ---------- */
+  .bar {
     background: #fff; border-bottom: 1px solid var(--line);
-    padding: 14px 18px; display: flex; flex-wrap: wrap;
-    gap: 10px; align-items: flex-end; justify-content: center;
+    padding: 12px 18px; display: flex; flex-wrap: wrap;
+    gap: 10px 12px; align-items: flex-end; justify-content: center;
   }
-  .toolbar .grp { display: flex; flex-direction: column; gap: 3px; }
-  .toolbar label { font-size: .8rem; color: var(--muted); }
-  .toolbar select, .toolbar input {
-    font-family: inherit; font-size: .95rem; padding: 7px 10px;
+  .bar .grp { display: flex; flex-direction: column; gap: 3px; }
+  .bar label { font-size: .78rem; color: var(--muted); }
+  .bar select, .bar input[type="text"] {
+    font-family: inherit; font-size: .93rem; padding: 7px 10px;
     border: 1px solid var(--line); border-radius: 6px; color: var(--navy); background: #fff;
   }
-  .toolbar input.term { width: 230px; }
+  .bar input.wide { width: 250px; }
+  .bar .sep { width: 1px; align-self: stretch; background: var(--line); margin: 0 3px; }
+
   .btn {
-    font-family: inherit; font-size: .93rem; font-weight: 600;
-    padding: 9px 17px; border-radius: 6px; cursor: pointer;
+    font-family: inherit; font-size: .92rem; font-weight: 600;
+    padding: 9px 16px; border-radius: 6px; cursor: pointer;
     border: 1px solid var(--line); background: #fff; color: var(--navy);
   }
   .btn.main { background: var(--gold); border-color: #d99f1c; color: var(--navy-deep); }
   .btn.main:hover { background: #ffc63f; }
+  .btn.ghost { color: var(--muted); }
   .btn:disabled { opacity: .5; cursor: default; }
   .btn:focus-visible, select:focus-visible, input:focus-visible {
     outline: 3px solid var(--gold); outline-offset: 2px;
   }
-  .note { text-align: center; color: var(--muted); font-size: .85rem; padding: 10px 16px 0; }
+  .filepick { display: none; }
 
-  /* ---------- ตัวโปสเตอร์ ขนาด A4 แนวตั้ง ---------- */
-  .stage { padding: 22px 12px 60px; display: flex; justify-content: center; }
+  .msg { text-align: center; color: var(--muted); font-size: .85rem; padding: 10px 16px 0; }
+  .msg.bad { color: #a8443c; }
 
-  #poster {
-    width: 794px;            /* A4 กว้าง 210mm ที่ 96dpi */
-    min-height: 1123px;      /* A4 สูง 297mm */
-    background: #fff;
+  /* ---------- กระดาษ ---------- */
+  .stage { padding: 20px 10px 60px; display: flex; flex-direction: column; align-items: center; gap: 22px; }
+
+  .sheet {
+    width: var(--sheet-w); height: var(--sheet-h);
+    background: #fff; overflow: hidden;
     display: flex; flex-direction: column;
     box-shadow: 0 2px 16px rgba(11, 34, 71, .15);
   }
 
-  .p-head {
-    background: var(--navy-deep);
-    padding: 26px 34px 22px;
+  /* หัวแบบมาตรฐาน */
+  .s-head {
+    background: var(--navy-deep); padding: 24px 34px 20px;
     border-bottom: 6px solid var(--gold);
-    display: flex; align-items: center; gap: 20px;
+    display: flex; align-items: center; gap: 20px; flex: none;
   }
-  .p-head .crest {
-    width: 86px; height: 86px; flex: none;
+  .s-head .crest {
+    width: 82px; height: 82px; flex: none;
     background: #fff; border-radius: 12px; padding: 8px;
     display: flex; align-items: center; justify-content: center;
   }
-  .p-head .crest img { max-width: 100%; max-height: 100%; object-fit: contain; }
-  .p-head .crest.empty { display: none; }
-
-  .p-head .txt { flex: 1 1 auto; color: #fff; min-width: 0; }
-  .p-head .kicker {
+  .s-head .crest img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .s-head .crest.empty { display: none; }
+  .s-head .txt { flex: 1 1 auto; color: #fff; min-width: 0; }
+  .s-head .kicker {
     display: inline-block; background: var(--gold); color: var(--navy-deep);
-    font-size: .78rem; font-weight: 600; letter-spacing: .06em;
-    padding: 2px 12px; border-radius: 999px; margin-bottom: 7px;
+    font-size: .76rem; font-weight: 600; letter-spacing: .06em;
+    padding: 2px 12px; border-radius: 999px; margin-bottom: 6px;
   }
-  .p-head h1 {
+  .s-head h1 {
     font-family: 'Noto Serif Thai', serif; font-weight: 600;
-    font-size: 1.45rem; margin: 0; line-height: 1.3;
+    font-size: 1.4rem; margin: 0; line-height: 1.3;
   }
-  .p-head .month {
+  .s-head .month {
     font-family: 'Noto Serif Thai', serif; font-weight: 700;
-    font-size: 2.1rem; margin: 2px 0 0; line-height: 1.2; color: var(--gold);
+    font-size: 2rem; margin: 2px 0 0; line-height: 1.2; color: var(--gold);
   }
-  .p-head .term { margin: 5px 0 0; font-size: .95rem; color: #c3d1e6; }
+  .s-head .term { margin: 4px 0 0; font-size: .92rem; color: #c3d1e6; }
 
-  .p-body { flex: 1 1 auto; padding: 26px 34px 20px; }
+  /* หัวแบบแบนเนอร์ */
+  .s-banner { flex: none; border-bottom: 6px solid var(--gold); }
+  .s-banner img { display: block; width: 100%; height: auto; }
+  .s-bandstrip {
+    background: var(--navy-deep); color: #fff;
+    padding: 12px 34px; display: flex; align-items: baseline;
+    justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  }
+  .s-bandstrip .month {
+    font-family: 'Noto Serif Thai', serif; font-weight: 700;
+    font-size: 1.55rem; margin: 0; color: var(--gold);
+  }
+  .s-bandstrip .term { font-size: .92rem; color: #c3d1e6; }
+
+  /* หัวหน้าต่อ */
+  .s-cont {
+    flex: none; background: var(--navy-deep); color: #fff;
+    border-bottom: 5px solid var(--gold);
+    padding: 13px 34px; display: flex; align-items: baseline;
+    justify-content: space-between; gap: 14px;
+  }
+  .s-cont .t { font-family: 'Noto Serif Thai', serif; font-weight: 600; font-size: 1.08rem; }
+  .s-cont .m { color: var(--gold); font-weight: 600; font-size: .98rem; }
+
+  .s-body { flex: 1 1 auto; overflow: hidden; padding: 22px 34px 10px; }
 
   table.sched { width: 100%; border-collapse: collapse; }
   table.sched th {
     background: var(--navy); color: #fff;
-    font-family: 'Noto Serif Thai', serif; font-weight: 600; font-size: 1.02rem;
-    padding: 11px 14px; text-align: left;
+    font-family: 'Noto Serif Thai', serif; font-weight: 600; font-size: 1rem;
+    padding: 10px 14px; text-align: left;
   }
-  table.sched th.dcol { width: 215px; }
+  table.sched th.dcol { width: 210px; }
   table.sched td {
     border-bottom: 1px solid var(--line);
-    padding: 11px 14px; vertical-align: top; font-size: .95rem;
+    padding: 10px 14px; vertical-align: top; font-size: .94rem;
   }
   table.sched tr:nth-child(even) td { background: #f8fafc; }
   table.sched td.date {
     white-space: nowrap; font-weight: 600;
     border-left: 4px solid var(--gold); background: var(--gold-tint) !important;
   }
-  table.sched td .sub { display: block; color: var(--muted); font-size: .87rem; margin-top: 2px; }
+  table.sched td .sub { display: block; color: var(--muted); font-size: .85rem; margin-top: 2px; }
   table.sched td .cat {
-    display: inline-block; font-size: .76rem; color: #fff;
+    display: inline-block; font-size: .75rem; color: #fff;
     padding: 1px 9px; border-radius: 999px; margin-bottom: 3px;
   }
 
-  .p-empty {
+  .s-foot {
+    flex: none; border-top: 2px solid var(--line);
+    margin: 0 34px; padding: 11px 0 18px;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 14px; font-size: .82rem; color: var(--muted);
+  }
+
+  .s-empty {
     border: 1px dashed var(--line); border-radius: 10px;
     padding: 50px 20px; text-align: center; color: var(--muted);
   }
 
-  .p-foot {
-    border-top: 2px solid var(--line);
-    margin: 0 34px; padding: 13px 0 22px;
-    display: flex; justify-content: space-between; align-items: center;
-    gap: 14px; flex-wrap: wrap;
-    font-size: .85rem; color: var(--muted);
+  /* กล่องวัดความสูง มองไม่เห็นแต่ยังวัดได้ */
+  #gauge {
+    position: absolute; left: -99999px; top: 0;
+    width: calc(var(--sheet-w) - 68px); visibility: hidden;
   }
-  .p-foot .right { text-align: right; }
 
   /* ---------- ตอนสั่งพิมพ์ ---------- */
   @media print {
     @page { size: A4 portrait; margin: 0; }
     body { background: #fff; }
-    .toolbar, .note, .stage { padding: 0; }
-    .toolbar, .note { display: none !important; }
-    #poster { width: 100%; min-height: auto; box-shadow: none; }
-    table.sched tr { break-inside: avoid; }
-    .p-head { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .bar, .msg { display: none !important; }
+    .stage { padding: 0; gap: 0; }
+    .sheet { box-shadow: none; break-after: page; page-break-after: always; }
+    .sheet:last-child { break-after: auto; page-break-after: auto; }
     * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   }
 
   @media (max-width: 860px) {
-    .stage { padding: 14px 8px 40px; }
-    #poster { width: 100%; min-height: auto; }
-    .p-head { padding: 18px; gap: 14px; }
-    .p-head .crest { width: 60px; height: 60px; }
-    .p-head .month { font-size: 1.6rem; }
-    .p-body { padding: 18px; }
-    table.sched th.dcol { width: 130px; }
-    .p-foot { margin: 0 18px; }
+    .stage { padding: 12px 6px 40px; }
+    .sheet { transform-origin: top center; }
   }
 </style>
 </head>
 <body>
 
-<div class="toolbar">
+<div class="bar">
   <div class="grp">
     <label for="selMonth">เดือน</label>
     <select id="selMonth"></select>
@@ -167,46 +195,42 @@
     <label for="selYear">ปี พ.ศ.</label>
     <select id="selYear"></select>
   </div>
+
+  <div class="sep"></div>
+
   <div class="grp">
-    <label for="inpTerm">ภาคเรียน แก้ข้อความได้</label>
-    <input type="text" class="term" id="inpTerm">
+    <label for="selHead">หัวกระดาษ</label>
+    <select id="selHead">
+      <option value="std">แบบมาตรฐาน ตราโรงเรียน</option>
+      <option value="banner">ใช้รูปแบนเนอร์</option>
+    </select>
   </div>
+  <button class="btn" id="btnPick" type="button">เลือกรูปแบนเนอร์</button>
+  <button class="btn ghost" id="btnClear" type="button">ลบรูป</button>
+  <input type="file" class="filepick" id="filePick" accept="image/*">
+
+  <div class="sep"></div>
+
+  <div class="grp">
+    <label for="inpTitle">ชื่อเรื่อง</label>
+    <input type="text" class="wide" id="inpTitle">
+  </div>
+  <div class="grp">
+    <label for="inpTerm">ภาคเรียน</label>
+    <input type="text" class="wide" id="inpTerm">
+  </div>
+
+  <div class="sep"></div>
+
   <button class="btn main" id="btnPng" type="button">บันทึกเป็นรูป</button>
   <button class="btn" id="btnPdf" type="button">บันทึกเป็น PDF</button>
-  <button class="btn" id="btnBack" type="button" onclick="location.href='index.html'">กลับหน้าปฏิทิน</button>
+  <button class="btn ghost" type="button" onclick="location.href='index.html'">กลับหน้าปฏิทิน</button>
 </div>
 
-<p class="note" id="note">กำลังโหลดข้อมูลกิจกรรม</p>
+<p class="msg" id="msg">กำลังโหลดข้อมูลกิจกรรม</p>
 
-<div class="stage">
-  <div id="poster">
-    <div class="p-head">
-      <span class="crest" id="crest">
-        <img src="logo.png" alt="ตราโรงเรียนเบญจมราชรังสฤษฎิ์ ๒"
-             onerror="document.getElementById('crest').classList.add('empty')">
-      </span>
-      <div class="txt">
-        <span class="kicker">CALENDAR</span>
-        <h1>ปฏิทินโรงเรียนเบญจมราชรังสฤษฎิ์ ๒</h1>
-        <p class="month" id="pMonth">&nbsp;</p>
-        <p class="term" id="pTerm">&nbsp;</p>
-      </div>
-    </div>
-
-    <div class="p-body">
-      <table class="sched" id="tbl">
-        <thead><tr><th class="dcol">วันที่</th><th>กิจกรรม</th></tr></thead>
-        <tbody id="tbody"></tbody>
-      </table>
-      <div class="p-empty" id="empty" style="display:none">เดือนนี้ยังไม่มีกิจกรรมในระบบ</div>
-    </div>
-
-    <div class="p-foot">
-      <span>กลุ่มบริหารวิชาการ โรงเรียนเบญจมราชรังสฤษฎิ์ ๒</span>
-      <span class="right" id="pStamp"></span>
-    </div>
-  </div>
-</div>
+<div class="stage" id="stage"></div>
+<div id="gauge"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
@@ -215,12 +239,24 @@
   var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxFrKxA4KBQujrKBI9gcDOVOuSf-BuIXJ31lY0SfdpLQmjlYMfH6ob9StOUgYQuC_xN/exec?api=events';
   // ===============================================
 
-  var MONTH_FULL = ['', 'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
-                    'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+  var MONTH = ['', 'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+               'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+  var LS = 'ben2poster.';
 
   var all = [];
+  var banner = '';                       // รูปแบนเนอร์เก็บเป็น dataURL
   var $ = function (id) { return document.getElementById(id); };
 
+  // ---------- จำค่าที่ตั้งไว้ กันต้องตั้งใหม่ทุกครั้ง ----------
+  function save(k, v) { try { localStorage.setItem(LS + k, v); } catch (e) {} }
+  function load(k, d) { try { var v = localStorage.getItem(LS + k); return v === null ? d : v; } catch (e) { return d; } }
+
+  function say(text, bad) {
+    $('msg').textContent = text;
+    $('msg').className = 'msg' + (bad ? ' bad' : '');
+  }
+
+  // ---------- วันที่ ----------
   function pad(n) { return ('0' + n).slice(-2); }
 
   function shiftDay(s, n) {
@@ -230,147 +266,353 @@
     return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
   }
 
-  /** ช่วงวันจริงของกิจกรรม ฟีดส่งวันสิ้นสุดแบบไม่รวมวันนั้นเมื่อเป็นกิจกรรมตลอดวัน */
-  function rangeOf(e) {
+  /** แตกกิจกรรมเป็นรายวัน ฟีดส่งวันสิ้นสุดแบบไม่รวมวันนั้นเมื่อเป็นกิจกรรมตลอดวัน */
+  function daysOf(e) {
     var s = e.start.slice(0, 10);
-    var en = e.end ? e.end.slice(0, 10) : s;
+    var en = (e.end || s).slice(0, 10);
     if (e.allDay) en = shiftDay(en, -1);
     if (en < s) en = s;
-    return [s, en];
-  }
-
-  /** แตกช่วงออกเป็นรายวัน เพื่อให้รวมกิจกรรมชื่อเดียวกันได้ */
-  function daysOf(e) {
-    var r = rangeOf(e), out = [], cur = r[0];
-    var guard = 0;
-    while (cur <= r[1] && guard++ < 400) { out.push(cur); cur = shiftDay(cur, 1); }
+    var out = [], cur = s, guard = 0;
+    while (cur <= en && guard++ < 400) { out.push(cur); cur = shiftDay(cur, 1); }
     return out;
   }
 
-  /** เปลี่ยนรายวันเป็นข้อความอ่านง่าย เช่น 1 - 5 กันยายน 2569 หรือ 21, 23, 25 กันยายน 2569 */
+  /** เขียนวันที่ให้อ่านง่าย เช่น 1 - 5 กันยายน 2569 หรือ 21, 23, 25 กันยายน 2569 */
   function dateText(days) {
     days = days.slice().sort();
     var runs = [], cur = [days[0]];
     for (var i = 1; i < days.length; i++) {
-      if (days[i] === shiftDay(days[i - 1], 1)) { cur.push(days[i]); }
+      if (days[i] === shiftDay(days[i - 1], 1)) cur.push(days[i]);
       else { runs.push(cur); cur = [days[i]]; }
     }
     runs.push(cur);
 
-    var months = {};
-    days.forEach(function (d) { months[d.slice(0, 7)] = true; });
-    var oneMonth = Object.keys(months).length === 1;
+    var ms = {};
+    days.forEach(function (d) { ms[d.slice(0, 7)] = 1; });
+    var one = Object.keys(ms).length === 1;
 
     function dd(d) { return String(Number(d.slice(8, 10))); }
-    function mm(d) { return MONTH_FULL[Number(d.slice(5, 7))]; }
-    function yy(d) { return String(Number(d.slice(0, 4)) + 543); }
+    function mm(d) { return MONTH[Number(d.slice(5, 7))]; }
 
     var parts = runs.map(function (r) {
       var a = r[0], b = r[r.length - 1];
-      if (a === b) return oneMonth ? dd(a) : dd(a) + ' ' + mm(a);
+      if (a === b) return one ? dd(a) : dd(a) + ' ' + mm(a);
       if (a.slice(0, 7) === b.slice(0, 7)) {
-        return oneMonth ? dd(a) + ' - ' + dd(b) : dd(a) + ' - ' + dd(b) + ' ' + mm(a);
+        return one ? dd(a) + ' - ' + dd(b) : dd(a) + ' - ' + dd(b) + ' ' + mm(a);
       }
       return dd(a) + ' ' + mm(a) + ' - ' + dd(b) + ' ' + mm(b);
     });
 
     var last = days[days.length - 1];
-    var tail = oneMonth ? ' ' + mm(last) + ' ' + yy(last) : ' ' + yy(last);
-    return parts.join(', ') + tail;
+    var year = String(Number(last.slice(0, 4)) + 543);
+    return parts.join(', ') + (one ? ' ' + mm(last) + ' ' + year : ' ' + year);
   }
 
   function guessTerm(ce, m) {
-    // ภาคเรียนที่ 1 ราวเดือน พ.ค. ถึง ต.ค. ที่เหลือเป็นภาคเรียนที่ 2
     var be = ce + 543;
     if (m >= 5 && m <= 10) return 'ภาคเรียนที่ 1 ปีการศึกษา ' + be;
     if (m >= 11) return 'ภาคเรียนที่ 2 ปีการศึกษา ' + be;
     return 'ภาคเรียนที่ 2 ปีการศึกษา ' + (be - 1);
   }
 
-  function draw() {
-    var m  = Number($('selMonth').value);
+  // ---------- รวบรวมแถวของเดือนที่เลือก ----------
+  function rowsOfMonth() {
+    var m = Number($('selMonth').value);
     var ce = Number($('selYear').value) - 543;
     var from = ce + '-' + pad(m) + '-01';
-    var to   = shiftDay(ce + '-' + pad(m === 12 ? 1 : m + 1) + '-01', -1);
-    if (m === 12) to = ce + '-12-31';
+    var to = m === 12 ? ce + '-12-31'
+                      : shiftDay(ce + '-' + pad(m + 1) + '-01', -1);
 
-    $('pMonth').textContent = 'เดือน' + MONTH_FULL[m];
-    $('pTerm').textContent  = $('inpTerm').value;
-
-    // รวมกิจกรรมชื่อเดียวกันที่จัดหลายวัน ให้เป็นแถวเดียว
-    var groups = {};
+    var g = {};
     all.forEach(function (e) {
-      var inMonth = daysOf(e).filter(function (d) { return d >= from && d <= to; });
-      if (!inMonth.length) return;
-
+      var inm = daysOf(e).filter(function (d) { return d >= from && d <= to; });
+      if (!inm.length) return;
       var p = e.extendedProps || {};
       var key = e.title + '||' + (p.location || '');
-      if (!groups[key]) {
-        groups[key] = { title: e.title, color: e.color, cat: p.category || '',
-                        loc: p.location || '', detail: p.detail || '', days: [] };
+      if (!g[key]) {
+        g[key] = { title: e.title, color: e.color, cat: p.category || '',
+                   loc: p.location || '', detail: p.detail || '', days: [] };
       }
-      groups[key].days = groups[key].days.concat(inMonth);
+      g[key].days = g[key].days.concat(inm);
     });
 
-    var rows = Object.keys(groups).map(function (k) { return groups[k]; })
-      .filter(function (g) { return g.days.length; })
+    return Object.keys(g).map(function (k) { return g[k]; })
       .sort(function (a, b) {
         var x = a.days.slice().sort()[0], y = b.days.slice().sort()[0];
         return x < y ? -1 : (x > y ? 1 : 0);
       });
+  }
 
-    var tb = $('tbody');
-    tb.innerHTML = '';
-    $('tbl').style.display = rows.length ? '' : 'none';
-    $('empty').style.display = rows.length ? 'none' : '';
+  function makeRow(g) {
+    var tr = document.createElement('tr');
+
+    var td1 = document.createElement('td');
+    td1.className = 'date';
+    td1.textContent = dateText(g.days);
+
+    var td2 = document.createElement('td');
+    if (g.cat) {
+      var cat = document.createElement('span');
+      cat.className = 'cat';
+      cat.style.background = g.color || '#12315e';
+      cat.textContent = g.cat;
+      td2.appendChild(cat);
+      td2.appendChild(document.createElement('br'));
+    }
+    td2.appendChild(document.createTextNode(g.title));
+
+    var extra = [];
+    if (g.loc) extra.push('ณ ' + g.loc);
+    if (g.detail) extra.push(g.detail);
+    if (extra.length) {
+      var sub = document.createElement('span');
+      sub.className = 'sub';
+      sub.textContent = extra.join('  ·  ');
+      td2.appendChild(sub);
+    }
+
+    tr.appendChild(td1); tr.appendChild(td2);
+    return tr;
+  }
+
+  // ---------- สร้างกระดาษแต่ละแผ่น ----------
+  function headStd(monthText, term) {
+    var h = document.createElement('div');
+    h.className = 's-head';
+    h.innerHTML =
+      '<span class="crest"><img src="logo.png" alt="ตราโรงเรียน"></span>' +
+      '<div class="txt">' +
+        '<span class="kicker">CALENDAR</span>' +
+        '<h1></h1><p class="month"></p><p class="term"></p>' +
+      '</div>';
+    var img = h.querySelector('img');
+    img.onerror = function () { h.querySelector('.crest').classList.add('empty'); };
+    h.querySelector('h1').textContent = $('inpTitle').value;
+    h.querySelector('.month').textContent = monthText;
+    h.querySelector('.term').textContent = term;
+    return h;
+  }
+
+  function headBanner(monthText, term) {
+    var wrap = document.createElement('div');
+    wrap.className = 's-banner';
+    if (banner) {
+      var img = document.createElement('img');
+      img.src = banner;
+      img.alt = 'แบนเนอร์หัวกระดาษ';
+      wrap.appendChild(img);
+    }
+    var strip = document.createElement('div');
+    strip.className = 's-bandstrip';
+    var mo = document.createElement('p');
+    mo.className = 'month';
+    mo.textContent = monthText;
+    var tm = document.createElement('span');
+    tm.className = 'term';
+    tm.textContent = term;
+    strip.appendChild(mo); strip.appendChild(tm);
+    wrap.appendChild(strip);
+    return wrap;
+  }
+
+  function headCont(monthText) {
+    var h = document.createElement('div');
+    h.className = 's-cont';
+    var t = document.createElement('span');
+    t.className = 't';
+    t.textContent = $('inpTitle').value;
+    var m = document.createElement('span');
+    m.className = 'm';
+    m.textContent = monthText + ' (ต่อ)';
+    h.appendChild(t); h.appendChild(m);
+    return h;
+  }
+
+  function newSheet(first, monthText, term) {
+    var sheet = document.createElement('div');
+    sheet.className = 'sheet';
+
+    if (!first) sheet.appendChild(headCont(monthText));
+    else if ($('selHead').value === 'banner') sheet.appendChild(headBanner(monthText, term));
+    else sheet.appendChild(headStd(monthText, term));
+
+    var body = document.createElement('div');
+    body.className = 's-body';
+    var tbl = document.createElement('table');
+    tbl.className = 'sched';
+    tbl.innerHTML = '<thead><tr><th class="dcol">วันที่</th><th>กิจกรรม</th></tr></thead><tbody></tbody>';
+    body.appendChild(tbl);
+    sheet.appendChild(body);
+
+    var foot = document.createElement('div');
+    foot.className = 's-foot';
+    foot.innerHTML = '<span>กลุ่มบริหารวิชาการ โรงเรียนเบญจมราชรังสฤษฎิ์ ๒</span><span class="pg"></span>';
+    sheet.appendChild(foot);
+
+    return { el: sheet, body: body, tbody: tbl.querySelector('tbody'), foot: foot };
+  }
+
+  var pages = [];
+
+  function render() {
+    var m = Number($('selMonth').value);
+    var monthText = 'เดือน' + MONTH[m];
+    var term = $('inpTerm').value;
+    var rows = rowsOfMonth();
+
+    var stage = $('stage');
+    stage.innerHTML = '';
+    pages = [];
+
+    if (!rows.length) {
+      var s = newSheet(true, monthText, term);
+      s.body.innerHTML = '<div class="s-empty">เดือนนี้ยังไม่มีกิจกรรมในระบบ</div>';
+      s.foot.querySelector('.pg').textContent = 'หน้า 1 / 1';
+      stage.appendChild(s.el);
+      pages.push(s.el);
+      say('เดือนนี้ยังไม่มีกิจกรรมที่อนุมัติแล้วในระบบ');
+      return;
+    }
+
+    var cur = newSheet(true, monthText, term);
+    stage.appendChild(cur.el);
+    pages.push(cur.el);
 
     rows.forEach(function (g) {
-      var tr = document.createElement('tr');
+      var tr = makeRow(g);
+      cur.tbody.appendChild(tr);
 
-      var td1 = document.createElement('td');
-      td1.className = 'date';
-      td1.textContent = dateText(g.days);
-
-      var td2 = document.createElement('td');
-      if (g.cat) {
-        var cat = document.createElement('span');
-        cat.className = 'cat';
-        cat.style.background = g.color || '#12315e';
-        cat.textContent = g.cat;
-        td2.appendChild(cat);
-        td2.appendChild(document.createElement('br'));
+      // ล้นกระดาษแล้วย้ายแถวนี้ไปหน้าใหม่
+      if (cur.body.scrollHeight > cur.body.clientHeight) {
+        if (cur.tbody.children.length === 1) return;   // แถวเดียวที่สูงเกินหน้า ปล่อยไว้
+        cur.tbody.removeChild(tr);
+        cur = newSheet(false, monthText, term);
+        stage.appendChild(cur.el);
+        pages.push(cur.el);
+        cur.tbody.appendChild(tr);
       }
-      td2.appendChild(document.createTextNode(g.title));
-
-      var extra = [];
-      if (g.loc) extra.push('ณ ' + g.loc);
-      if (g.detail) extra.push(g.detail);
-      if (extra.length) {
-        var sub = document.createElement('span');
-        sub.className = 'sub';
-        sub.textContent = extra.join('  ·  ');
-        td2.appendChild(sub);
-      }
-
-      tr.appendChild(td1); tr.appendChild(td2);
-      tb.appendChild(tr);
     });
 
-    $('note').textContent = rows.length
-      ? 'แสดง ' + rows.length + ' รายการ เลือกเดือนแล้วกดบันทึกเป็นรูปหรือ PDF'
-      : 'เดือนนี้ยังไม่มีกิจกรรมที่อนุมัติแล้วในระบบ';
+    pages.forEach(function (el, i) {
+      el.querySelector('.pg').textContent = 'หน้า ' + (i + 1) + ' / ' + pages.length;
+    });
+
+    say('แสดง ' + rows.length + ' รายการ แบ่งเป็น ' + pages.length +
+        (pages.length > 1 ? ' หน้า บันทึกเป็นรูปจะได้ ' + pages.length + ' ไฟล์' : ' หน้า'));
   }
 
-  function fileName(ext) {
-    var m = Number($('selMonth').value);
-    return 'ปฏิทินกิจกรรม-' + MONTH_FULL[m] + '-' + $('selYear').value + '.' + ext;
+  // ---------- บันทึกเป็นรูป ทีละหน้า ----------
+  function baseName() {
+    return 'ปฏิทินกิจกรรม-' + MONTH[Number($('selMonth').value)] + '-' + $('selYear').value;
   }
+
+  function shotOne(el, name) {
+    return html2canvas(el, { scale: 2, backgroundColor: '#ffffff', useCORS: true,
+                             width: el.offsetWidth, height: el.offsetHeight })
+      .then(function (canvas) {
+        return new Promise(function (done) {
+          var a = document.createElement('a');
+          a.download = name;
+          a.href = canvas.toDataURL('image/png');
+          a.click();
+          setTimeout(done, 600);     // เว้นจังหวะ ไม่ให้เบราว์เซอร์บล็อกการดาวน์โหลดรวด
+        });
+      });
+  }
+
+  $('btnPng').onclick = function () {
+    if (!pages.length) return;
+    var b = $('btnPng');
+    b.disabled = true;
+
+    var total = pages.length;
+    var chain = Promise.resolve();
+
+    pages.forEach(function (el, i) {
+      chain = chain.then(function () {
+        b.textContent = 'กำลังสร้างรูป ' + (i + 1) + '/' + total;
+        var name = total === 1 ? baseName() + '.png'
+                               : baseName() + '-หน้า' + (i + 1) + '.png';
+        return shotOne(el, name);
+      });
+    });
+
+    chain.then(function () {
+      say('บันทึกรูปแล้ว ' + total + ' ไฟล์ ดูในโฟลเดอร์ดาวน์โหลด');
+    }).catch(function (err) {
+      say('สร้างรูปไม่สำเร็จ ' + err.message + ' ใช้ปุ่มบันทึกเป็น PDF แทนได้', true);
+    }).then(function () {
+      b.disabled = false; b.textContent = 'บันทึกเป็นรูป';
+    });
+  };
+
+  $('btnPdf').onclick = function () { window.print(); };
+
+  // ---------- รูปแบนเนอร์ ----------
+  $('btnPick').onclick = function () { $('filePick').click(); };
+
+  $('filePick').onchange = function () {
+    var f = this.files && this.files[0];
+    if (!f) return;
+    if (!/^image\//.test(f.type)) { say('ไฟล์ที่เลือกไม่ใช่รูปภาพ', true); return; }
+
+    var fr = new FileReader();
+    fr.onload = function () {
+      fitBanner(fr.result, function (dataUrl) {
+        banner = dataUrl;
+        save('banner', banner);
+        $('selHead').value = 'banner';
+        save('head', 'banner');
+        render();
+        say('ใส่รูปแบนเนอร์แล้ว');
+      });
+    };
+    fr.readAsDataURL(f);
+    this.value = '';
+  };
+
+  /** ย่อรูปใหญ่ให้พอดีกับความกว้างกระดาษ เก็บไว้ได้โดยไม่เต็มพื้นที่เบราว์เซอร์ */
+  function fitBanner(dataUrl, done) {
+    var MAXW = 1588;                   // สองเท่าของความกว้างกระดาษ ให้รูปยังคม
+    var img = new Image();
+    img.onload = function () {
+      if (img.width <= MAXW && dataUrl.length < 1200000) { done(dataUrl); return; }
+      var sc = Math.min(1, MAXW / img.width);
+      var c = document.createElement('canvas');
+      c.width = Math.round(img.width * sc);
+      c.height = Math.round(img.height * sc);
+      var ctx = c.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, c.width, c.height);
+      ctx.drawImage(img, 0, 0, c.width, c.height);
+      done(c.toDataURL('image/jpeg', 0.92));
+    };
+    img.onerror = function () { done(dataUrl); };
+    img.src = dataUrl;
+  }
+
+  $('btnClear').onclick = function () {
+    banner = '';
+    save('banner', '');
+    $('selHead').value = 'std';
+    save('head', 'std');
+    render();
+    say('ลบรูปแบนเนอร์แล้ว กลับไปใช้หัวแบบมาตรฐาน');
+  };
+
+  $('selHead').onchange = function () {
+    if (this.value === 'banner' && !banner) {
+      say('ยังไม่ได้เลือกรูปแบนเนอร์ กดปุ่มเลือกรูปแบนเนอร์ก่อน', true);
+    }
+    save('head', this.value);
+    render();
+  };
 
   // ---------- ตัวเลือกเดือนและปี ----------
   var now = new Date();
   for (var i = 1; i <= 12; i++) {
     var o = document.createElement('option');
-    o.value = i; o.textContent = MONTH_FULL[i];
+    o.value = i; o.textContent = MONTH[i];
     if (i === now.getMonth() + 1) o.selected = true;
     $('selMonth').appendChild(o);
   }
@@ -381,36 +623,20 @@
     if (y === beNow) oy.selected = true;
     $('selYear').appendChild(oy);
   }
+
+  $('inpTitle').value = load('title', 'ปฏิทินโรงเรียนเบญจมราชรังสฤษฎิ์ ๒');
+  banner = load('banner', '');
+  $('selHead').value = banner ? load('head', 'banner') : 'std';
+
   function syncTerm() {
     $('inpTerm').value = guessTerm(Number($('selYear').value) - 543, Number($('selMonth').value));
   }
   syncTerm();
 
-  $('selMonth').onchange = function () { syncTerm(); draw(); };
-  $('selYear').onchange  = function () { syncTerm(); draw(); };
-  $('inpTerm').oninput   = function () { $('pTerm').textContent = this.value; };
-
-  $('pStamp').textContent = 'ข้อมูล ณ วันที่ ' + now.getDate() + ' ' +
-    MONTH_FULL[now.getMonth() + 1] + ' ' + beNow;
-
-  // ---------- บันทึกไฟล์ ----------
-  $('btnPdf').onclick = function () { window.print(); };
-
-  $('btnPng').onclick = function () {
-    var b = $('btnPng');
-    b.disabled = true; b.textContent = 'กำลังสร้างรูป';
-    html2canvas($('poster'), { scale: 2, backgroundColor: '#ffffff', useCORS: true })
-      .then(function (canvas) {
-        var a = document.createElement('a');
-        a.download = fileName('png');
-        a.href = canvas.toDataURL('image/png');
-        a.click();
-      })
-      .catch(function (err) {
-        alert('สร้างรูปไม่สำเร็จ ' + err.message + '\nใช้ปุ่มบันทึกเป็น PDF แทนได้');
-      })
-      .then(function () { b.disabled = false; b.textContent = 'บันทึกเป็นรูป'; });
-  };
+  $('selMonth').onchange = function () { syncTerm(); render(); };
+  $('selYear').onchange  = function () { syncTerm(); render(); };
+  $('inpTerm').oninput   = function () { render(); };
+  $('inpTitle').oninput  = function () { save('title', this.value); render(); };
 
   // ---------- โหลดข้อมูล ----------
   fetch(WEB_APP_URL)
@@ -418,10 +644,10 @@
     .then(function (data) {
       if (data && data.error) throw new Error(data.error);
       all = Array.isArray(data) ? data : [];
-      draw();
+      render();
     })
     .catch(function (err) {
-      $('note').textContent = 'โหลดข้อมูลไม่สำเร็จ ' + err.message;
+      say('โหลดข้อมูลไม่สำเร็จ ' + err.message, true);
     });
 })();
 </script>
